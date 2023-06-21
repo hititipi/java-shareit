@@ -2,15 +2,16 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.validation.marker.Create;
+import ru.practicum.shareit.validation.marker.Update;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
 
-import javax.validation.Valid;
 import java.util.Collection;
-
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,35 +22,38 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("{id}")
-    public User get(@PathVariable int id){
+    public UserDto get(@PathVariable int id) {
         log.info(Messages.getUser(id));
-        return userService.getUser(id);
+        User user = userService.getUser(id);
+        return UserMapper.toUserDto(user);
     }
 
     @GetMapping
-    public Collection<User> getAll(){
+    public Collection<UserDto> getAll() {
         log.info(Messages.getAllUsers());
-        return userService.getAllUsers();
+        Collection<User> users = userService.getAllUsers();
+        return UserMapper.toUserDto(users);
     }
 
     @PostMapping
-    public User add(@Valid @RequestBody User user){
+    public UserDto add(@Validated({Create.class}) @RequestBody UserDto userDto) {
         log.info(Messages.addUser());
-        return userService.createUser(user);
+        User user = userService.createUser(UserMapper.toUser(userDto, null));
+        return UserMapper.toUserDto(user);
     }
 
     @PatchMapping("{id}")
-    public User update(@Valid @RequestBody UserDto userDto,
-                       @PathVariable("id") int id){
+    public UserDto update(@Validated({Update.class}) @RequestBody UserDto userDto,
+                          @PathVariable("id") int id) {
         log.info(Messages.updateUser(id));
-        return userService.updateUser(id, userDto);
+        User user = UserMapper.toUser(userDto, id);
+        return UserMapper.toUserDto(userService.updateUser(user));
     }
 
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable int id){
+    public void deleteUser(@PathVariable int id) {
         log.info(Messages.deleteUser(id));
         userService.deleteUser(id);
     }
-
 
 }

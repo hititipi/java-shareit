@@ -2,9 +2,8 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.storage.InMemoryUserStorage;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Collection;
 
@@ -12,12 +11,11 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final InMemoryUserStorage storage;
+    private final UserStorage storage;
 
     public User getUser(int id) {
         return storage.getUser(id);
     }
-
 
     public Collection<User> getAllUsers() {
         return storage.getAllUsers();
@@ -27,8 +25,8 @@ public class UserServiceImpl implements UserService {
         return storage.createUser(user);
     }
 
-    public User updateUser(int userId, UserDto incomeUserDto) {
-        return storage.updateUser(userId, incomeUserDto);
+    public User updateUser(User user) {
+        return storage.updateUser(user);
     }
 
     public void deleteUser(int id) {

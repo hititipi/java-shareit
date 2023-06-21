@@ -27,11 +27,11 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemDto toItemDto(Item item){
+    public static ItemDto toItemDto(Item item) {
         return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable());
     }
 
-    public static Collection<ItemDto> toItemDto(Collection<Item> items){
+    public static Collection<ItemDto> toItemDto(Collection<Item> items) {
         return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 

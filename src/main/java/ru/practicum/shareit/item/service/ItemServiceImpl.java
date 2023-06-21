@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.user.storage.InMemoryUserStorage;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Collection;
 
@@ -13,7 +13,7 @@ import java.util.Collection;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemStorage itemStorage;
-    private final InMemoryUserStorage userStorage;
+    private final UserStorage userStorage;
 
     public Item addItem(Item item) {
         userStorage.checkContainsUserId(item.getOwner());
@@ -24,7 +24,7 @@ public class ItemServiceImpl implements ItemService {
         return itemStorage.update(item);
     }
 
-    public Item get(int itemId){
+    public Item get(int itemId) {
         return itemStorage.get(itemId);
     }
 

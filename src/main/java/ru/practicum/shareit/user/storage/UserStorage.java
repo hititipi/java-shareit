@@ -1,10 +1,12 @@
-package ru.practicum.shareit.user.service;
+package ru.practicum.shareit.user.storage;
 
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Collection;
 
-public interface UserService {
+public interface UserStorage {
+
+    void checkContainsUserId(int id);
 
     User getUser(int id);
 
@@ -15,5 +17,6 @@ public interface UserService {
     User updateUser(User user);
 
     void deleteUser(int id);
+
 
 }
