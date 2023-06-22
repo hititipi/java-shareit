@@ -1,12 +1,60 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.utils.Messages;
+import ru.practicum.shareit.validation.marker.Create;
 
-/**
- * TODO Sprint add-controllers.
- */
+import java.util.Collection;
+
+@Slf4j
 @RestController
 @RequestMapping("/items")
+@RequiredArgsConstructor
 public class ItemController {
+
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
+
+    private final ItemService itemService;
+
+    @PostMapping
+    public ItemDto add(@Validated({Create.class}) @RequestBody ItemDto itemDto,
+                    @RequestHeader(USER_ID_HEADER) int userId) {
+        log.info(Messages.addItem());
+        Item item = itemService.addItem(ItemMapper.toItem(itemDto, userId));
+        return ItemMapper.toItemDto(item);
+    }
+
+    @PatchMapping("{id}")
+    public ItemDto update(@RequestBody ItemDto itemDto,
+                       @PathVariable("id") int itemId,
+                       @RequestHeader(USER_ID_HEADER) int userId) {
+        log.info(Messages.updateItem(itemDto.getId()));
+        Item item =  itemService.updateItem(ItemMapper.toItem(itemDto, userId, itemId));
+        return ItemMapper.toItemDto(item);
+    }
+
+    @GetMapping
+    public Collection<ItemDto> getAll(@RequestHeader(USER_ID_HEADER) int userId) {
+        log.info(Messages.getAllItems(userId));
+        return ItemMapper.toItemDto(itemService.getAll(userId));
+    }
+
+    @GetMapping("{id}")
+    public ItemDto get(@PathVariable("id") int itemId) {
+        log.info(Messages.getItem(itemId));
+        return ItemMapper.toItemDto(itemService.get(itemId));
+    }
+
+    @GetMapping("/search")
+    public Collection<ItemDto> findItemsByText(@RequestParam String text) {
+        log.info(Messages.findItems(text));
+        return ItemMapper.toItemDto(itemService.findItemsByText(text));
+    }
+
 }
