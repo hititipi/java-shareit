@@ -51,7 +51,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Collection<Item> getAll(int userId) {
-        if (!itemsByUser.containsKey(userId)){
+        if (!itemsByUser.containsKey(userId)) {
             return Collections.EMPTY_LIST;
         }
         return itemsByUser.get(userId);
