@@ -6,16 +6,14 @@ import ru.practicum.shareit.validation.ValidationErrors;
 import ru.practicum.shareit.validation.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryItemStorage implements ItemStorage {
 
     private final Map<Integer, Item> items = new HashMap<>();
+    private final Map<Integer, List<Item>> itemsByUser = new HashMap<>();
     private int id = 0;
 
     private void checkContainsItem(int id) {
@@ -28,6 +26,7 @@ public class InMemoryItemStorage implements ItemStorage {
     public Item addItem(Item item) {
         item.setId(++id);
         items.put(item.getId(), item);
+        itemsByUser.computeIfAbsent(item.getOwner(), items -> new ArrayList<>()).add(item);
         return item;
     }
 
@@ -52,7 +51,10 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Collection<Item> getAll(int userId) {
-        return items.values().stream().filter(item -> item.getOwner() == userId).collect(Collectors.toList());
+        if (!itemsByUser.containsKey(userId)){
+            return Collections.EMPTY_LIST;
+        }
+        return itemsByUser.get(userId);
     }
 
     @Override

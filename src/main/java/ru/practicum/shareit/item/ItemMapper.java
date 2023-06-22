@@ -1,14 +1,16 @@
 package ru.practicum.shareit.item;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class ItemMapper {
 
-    public static Item toItem(ItemDto itemDto, int ownerId, int itemId) {
+    public Item toItem(ItemDto itemDto, int ownerId, int itemId) {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
@@ -18,7 +20,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static Item toItem(ItemDto itemDto, int ownerId) {
+    public Item toItem(ItemDto itemDto, int ownerId) {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
@@ -27,11 +29,11 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemDto toItemDto(Item item) {
+    public ItemDto toItemDto(Item item) {
         return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable());
     }
 
-    public static Collection<ItemDto> toItemDto(Collection<Item> items) {
+    public Collection<ItemDto> toItemDto(Collection<Item> items) {
         return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
