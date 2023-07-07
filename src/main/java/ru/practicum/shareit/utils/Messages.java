@@ -1,5 +1,7 @@
 package ru.practicum.shareit.utils;
 
+import ru.practicum.shareit.booking.model.BookingState;
+
 public class Messages {
 
     public static String getAllUsers() {
@@ -40,5 +42,33 @@ public class Messages {
 
     public static String findItems(String text) {
         return String.format("Запрос на поиск вещи: text = %s", text);
+    }
+
+    public static String addBooking() {
+        return "Запрос на создание бронирования";
+    }
+
+    public static String approveBooking(int bookingId, int userId, boolean approve) {
+        if (approve) {
+            return String.format("Запрос на подтверждение бронирования: booking_id = %d, user_id = %d", bookingId, userId);
+        } else {
+            return String.format("Запрос на отклонение бронирования: booking_id = %d, user_id = %d", bookingId, userId);
+        }
+    }
+
+    public static String findBooking(int bookingId, int userId) {
+        return String.format("Запрос на получение бронирования: booking_id = %d, user_id = %d", bookingId, userId);
+    }
+
+    public static String findAllBookings(BookingState state, int userId) {
+        return String.format("Запрос на получение всех бронирований: user_id = %d, state = %s", userId, state);
+    }
+
+    public static String findAllBookingsForOwner(int ownerId, BookingState state) {
+        return String.format("Запрос на получение бронирований для всех вещей: owner_id = %d, state = %s", ownerId, state);
+    }
+
+    public static String addComment(int itemId, int userId) {
+        return String.format("Запрос на добавление комментария: booking_id = %d, user_id = %d", itemId, userId);
     }
 }
