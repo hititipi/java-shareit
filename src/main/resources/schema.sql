@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS comments (
     item_id INTEGER NOT NULL,
     author_id INTEGER NOT NULL,
     created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     CONSTRAINT fk_comments_item_id FOREIGN KEY (item_id) REFERENCES items
         ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_comments_author_id FOREIGN KEY (author_id) REFERENCES users
