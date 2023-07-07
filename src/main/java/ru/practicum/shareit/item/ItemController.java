@@ -27,11 +27,11 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto add(@Validated({Create.class}) @RequestBody ItemDto itemDto,
+    public ResponseItemDto add(@Validated({Create.class}) @RequestBody ItemDto itemDto,
                        @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.addItem());
         Item item = itemService.addItem(ItemMapper.toItem(itemDto, userId));
-        return ItemMapper.toItemDto(item);
+        return ItemMapper.toResponseItemDto(item, null, null, null);
     }
 
     @PatchMapping("{id}")
