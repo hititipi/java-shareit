@@ -31,6 +31,7 @@ import static ru.practicum.shareit.validation.ValidationErrors.RESOURCE_NOT_FOUN
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -44,7 +45,6 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.save(item);
     }
 
-    @Transactional
     @Override
     public Item updateItem(Item updateItem) {
         userService.getUser(updateItem.getOwner()); // check
