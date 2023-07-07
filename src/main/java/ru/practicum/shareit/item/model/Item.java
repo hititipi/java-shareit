@@ -23,7 +23,5 @@ public class Item {
     private Boolean available;
     @Column(name = "owner_id")
     private int owner;
-    @Column(name = "request_id")
-    private int request;
 
 }

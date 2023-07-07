@@ -30,9 +30,8 @@ public class ItemController {
     public ItemDto add(@Validated({Create.class}) @RequestBody ItemDto itemDto,
                        @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.addItem());
-        //Item item = itemService.addItem(ItemMapper.toItem(itemDto, userId));
-        //return ItemMapper.toItemDto(item);
-        return ItemMapper.toItemDto(ItemMapper.toItem(itemDto, userId));
+        Item item = itemService.addItem(ItemMapper.toItem(itemDto, userId));
+        return ItemMapper.toItemDto(item);
     }
 
     @PatchMapping("{id}")
