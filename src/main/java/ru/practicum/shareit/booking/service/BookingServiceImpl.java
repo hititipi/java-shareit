@@ -3,15 +3,17 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.*;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.validation.ValidationErrors;
 import ru.practicum.shareit.validation.exception.UnsupportedStatusException;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
@@ -24,16 +26,17 @@ import static ru.practicum.shareit.validation.ValidationErrors.*;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
-    private final ItemService itemService;
-    private final UserService userService;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Booking addBooking(PostBookingDto postBookingDto, int userId) {
-        Item item = itemService.getItem(postBookingDto.getItemId());
-        if (item.getOwner() == userId) {
+        Item item = findItem(postBookingDto.getItemId());
+        if (item.getOwner().getId() == userId) {
             throw new ValidationException(HttpStatus.NOT_FOUND, INVALID_USER_ID);
         }
         if (!item.getAvailable()) {
@@ -42,7 +45,7 @@ public class BookingServiceImpl implements BookingService {
         if (postBookingDto.getStart().isAfter(postBookingDto.getEnd()) || postBookingDto.getStart().isEqual(postBookingDto.getEnd())) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, INVALID_TIME);
         }
-        User user = userService.getUser(userId);
+        User user = findUser(userId);
         Booking booking = BookingMapper.toBooking(postBookingDto, item, user);
         return bookingRepository.save(booking);
     }
@@ -50,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking approve(int bookingId, boolean approved, int userId) {
         Booking booking = getBooking(bookingId);
-        if (booking.getItem().getOwner() != userId) {
+        if (booking.getItem().getOwner().getId() != userId) {
             throw new ValidationException(HttpStatus.NOT_FOUND, INVALID_USER_ID);
         }
         if (booking.getStatus() != BookingStatus.WAITING) {
@@ -61,22 +64,25 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Booking getBooking(int bookingId) {
         return bookingRepository.findById(bookingId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, RESOURCE_NOT_FOUND));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Booking getBookingForUser(int bookingId, int userId) {
         Booking booking = getBooking(bookingId);
-        if (booking.getBooker().getId() != userId && booking.getItem().getOwner() != userId) {
+        if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
             throw new ValidationException(HttpStatus.NOT_FOUND, INVALID_USER_ID);
         }
         return booking;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Booking> findAllBookings(BookingState state, int userId) {
-        userService.getUser(userId); // check
+        findUser(userId); // check
         LocalDateTime now = LocalDateTime.now();
         switch (state) {
             case CURRENT:
@@ -98,25 +104,37 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<Booking> getAllBookingForOwner(BookingState state, int ownerId) {
-        userService.getUser(ownerId); // check
+        User owner = findUser(ownerId);
         LocalDateTime now = LocalDateTime.now();
         switch (state) {
             case CURRENT:
-                return bookingRepository.findBookingsByItemOwnerCurrent(ownerId, now, SORT_BY_START_DESC);
+                return bookingRepository.findBookingsByItemOwnerCurrent(owner, now, SORT_BY_START_DESC);
             case PAST:
-                return bookingRepository.findBookingByItemOwnerAndEndIsBefore(ownerId, now, SORT_BY_START_DESC);
+                return bookingRepository.findBookingByItemOwnerAndEndIsBefore(owner, now, SORT_BY_START_DESC);
             case FUTURE:
-                return bookingRepository.findBookingByItemOwnerAndStartIsAfter(ownerId, now, SORT_BY_START_DESC);
+                return bookingRepository.findBookingByItemOwnerAndStartIsAfter(owner, now, SORT_BY_START_DESC);
             case WAITING:
-                return bookingRepository.findBookingByItemOwnerAndStatus(ownerId, BookingStatus.WAITING, SORT_BY_START_DESC);
+                return bookingRepository.findBookingByItemOwnerAndStatus(owner, BookingStatus.WAITING, SORT_BY_START_DESC);
             case REJECTED:
-                return bookingRepository.findBookingByItemOwnerAndStatus(ownerId, BookingStatus.REJECTED, SORT_BY_START_DESC);
+                return bookingRepository.findBookingByItemOwnerAndStatus(owner, BookingStatus.REJECTED, SORT_BY_START_DESC);
             case UNSUPPORTED_STATUS:
                 throw new UnsupportedStatusException(HttpStatus.BAD_REQUEST, UNSUPPORTED_STATUS);
             case ALL:
             default:
-                return bookingRepository.findBookingByItemOwner(ownerId, SORT_BY_START_DESC);
+                return bookingRepository.findBookingByItemOwner(owner, SORT_BY_START_DESC);
         }
     }
+
+    @Transactional(readOnly = true)
+    private Item findItem(int itemId){
+        return itemRepository.findById(itemId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, RESOURCE_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    private User findUser(int userId){
+        return userRepository.findById(userId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, ValidationErrors.RESOURCE_NOT_FOUND));
+    }
+
 }

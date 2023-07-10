@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -28,18 +29,18 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("select b " +
             "from bookings b " +
-            "where b.item.owner = :user_id " +
+            "where b.item.owner = :user " +
             "and b.start < :time " +
             "and b.end > :time")
-    List<Booking> findBookingsByItemOwnerCurrent(@Param("user_id") int userId, @Param("time") LocalDateTime now, Sort sort);
+    List<Booking> findBookingsByItemOwnerCurrent(@Param("user") User booker, @Param("time") LocalDateTime now, Sort sort);
 
-    List<Booking> findBookingByItemOwnerAndEndIsBefore(int bookerId, LocalDateTime now, Sort sort);
+    List<Booking> findBookingByItemOwnerAndEndIsBefore(User booker, LocalDateTime now, Sort sort);
 
-    List<Booking> findBookingByItemOwnerAndStartIsAfter(int bookerId, LocalDateTime now, Sort sort);
+    List<Booking> findBookingByItemOwnerAndStartIsAfter(User booker, LocalDateTime now, Sort sort);
 
-    List<Booking> findBookingByItemOwnerAndStatus(int bookerId, BookingStatus status, Sort sort);
+    List<Booking> findBookingByItemOwnerAndStatus(User booker, BookingStatus status, Sort sort);
 
-    List<Booking> findBookingByItemOwner(int bookerId, Sort sort);
+    List<Booking> findBookingByItemOwner(User booker, Sort sort);
 
     List<Booking> findBookingByItemIdAndStartBefore(int itemId, LocalDateTime now, Sort sort);
 

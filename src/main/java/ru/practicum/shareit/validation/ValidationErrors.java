@@ -8,5 +8,8 @@ public class ValidationErrors {
     public static final String ITEM_UNAVAILABLE = "Вещь недоступна";
     public static final String BOOKING_ALREADY_APPROVED = "Бронирование уже подтверждено (отклонено)";
     public static final String UNSUPPORTED_STATUS = "Unknown state: UNSUPPORTED_STATUS";
+    public static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
+    public static final String BAD_REQUEST = "Bad Request";
+
 
 }

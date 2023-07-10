@@ -9,11 +9,9 @@ import java.util.Collection;
 
 public interface ItemService {
 
-    Item addItem(Item item);
+    Item addItem(Item item, int userId);
 
-    Item updateItem(Item item);
-
-    Item getItem(int itemId);
+    Item updateItem(Item item, int ownerId);
 
     ResponseItemDto getItemForUser(int itemId, int userId);
 

@@ -27,22 +27,20 @@ public class ItemMapper {
                 .build();
     }
 
-    public Item toItem(ItemDto itemDto, int ownerId, int itemId) {
+    public Item toItem(ItemDto itemDto, int itemId) {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
                 .id(itemId)
-                .owner(ownerId)
                 .build();
     }
 
-    public Item toItem(ItemDto itemDto, int ownerId) {
+    public Item toItem(ItemDto itemDto) {
         return Item.builder()
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
-                .owner(ownerId)
                 .build();
     }
 

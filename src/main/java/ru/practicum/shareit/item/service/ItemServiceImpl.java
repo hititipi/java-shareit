@@ -16,8 +16,9 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.validation.ValidationErrors;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
 import java.time.LocalDateTime;
@@ -37,17 +38,20 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
-    public Item addItem(Item item) {
-        userService.getUser(item.getOwner()); // check
+    public Item addItem(Item item, int userId) {
+        User user = findUser(userId);
+        item.setOwner(user);
         return itemRepository.save(item);
     }
 
     @Override
-    public Item updateItem(Item updateItem) {
-        userService.getUser(updateItem.getOwner()); // check
+    public Item updateItem(Item updateItem, int ownerId) {
+        User owner = findUser(ownerId);
+        updateItem.setOwner(owner);
+
         Item item = getItem(updateItem.getId());
         if (updateItem.getName() != null && !updateItem.getName().isBlank()) {
             item.setName(updateItem.getName());
@@ -61,19 +65,20 @@ public class ItemServiceImpl implements ItemService {
         return item;
     }
 
-    @Override
+    @Transactional(readOnly = true)
     public Item getItem(int itemId) {
         return itemRepository.findById(itemId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, RESOURCE_NOT_FOUND));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseItemDto getItemForUser(int itemId, int userId) {
         Item item = getItem(itemId);
         List<Comment> comments = commentRepository.findByItemId(itemId);
         LocalDateTime now = LocalDateTime.now();
         Booking lastBooking = null;
         Booking nextBooking = null;
-        if (item.getOwner() == userId) {
+        if (item.getOwner().getId() == userId) {
             lastBooking = bookingRepository.findBookingByItemIdAndStartBefore(item.getId(), now, SORT_BY_START_DESC).stream().findFirst().orElse(null);
             nextBooking = bookingRepository.findBookingByItemIdAndStartAfterAndStatus(item.getId(), now, BookingStatus.APPROVED, SORT_BY_START).stream().findFirst().orElse(null);
         }
@@ -81,8 +86,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<ResponseItemDto> getAll(int userId) {
-        Collection<Item> items = itemRepository.findAllByOwnerOrderById(userId);
+        User owner = findUser(userId);
+        Collection<Item> items = itemRepository.findAllByOwnerOrderById(owner);
         Map<Item, List<Booking>> bookingsByItem = findApprovedBookingsByItem(items);
         Map<Item, List<Comment>> comments = findComments(items);
         LocalDateTime now = LocalDateTime.now();
@@ -91,15 +98,18 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     private Map<Item, List<Comment>> findComments(Collection<Item> items) {
         return commentRepository.findByItemIn(items).stream().collect(Collectors.groupingBy(Comment::getItem));
     }
 
+    @Transactional(readOnly = true)
     private Map<Item, List<Booking>> findApprovedBookingsByItem(Collection<Item> items) {
         return bookingRepository.findBookingByItemInAndStatus(items, BookingStatus.APPROVED).stream()
                 .collect(Collectors.groupingBy(Booking::getItem, Collectors.toList()));
     }
 
+    @Transactional(readOnly = true)
     private ResponseItemDto getResponseItemDto(Item item, List<Booking> bookings, List<Comment> comments, LocalDateTime now) {
         Booking lastBooking = null;
         Booking nextBooking = null;
@@ -115,6 +125,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Collection<Item> findItemsByText(String text) {
         if (text == null || text.isBlank()) {
             return Collections.EMPTY_LIST;
@@ -125,7 +136,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ResponseCommentDto createComment(CommentDto commentDto, int itemId, int userId) {
         Item item = getItem(itemId);
-        User author = userService.getUser(userId);
+        User author = findUser(userId);
         Collection<Booking> bookings = bookingRepository.findBookingByItemIdAndBookerIdAndStatusAndStartBefore(itemId, userId, BookingStatus.APPROVED, LocalDateTime.now());
         if (bookings == null || bookings.isEmpty()) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, INVALID_USER_ID);
@@ -133,5 +144,10 @@ public class ItemServiceImpl implements ItemService {
         Comment comment = CommentMapper.toComment(commentDto, item, author, LocalDateTime.now());
         comment = commentRepository.save(comment);
         return CommentMapper.toResponseCommentDto(comment);
+    }
+
+    @Transactional(readOnly = true)
+    private User findUser(int userId){
+        return userRepository.findById(userId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, ValidationErrors.RESOURCE_NOT_FOUND));
     }
 }
