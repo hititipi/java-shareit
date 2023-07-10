@@ -128,12 +128,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Transactional(readOnly = true)
-    private Item findItem(int itemId){
+    private Item findItem(int itemId) {
         return itemRepository.findById(itemId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, RESOURCE_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
-    private User findUser(int userId){
+    private User findUser(int userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, ValidationErrors.RESOURCE_NOT_FOUND));
     }
 

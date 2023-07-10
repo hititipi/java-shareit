@@ -147,7 +147,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional(readOnly = true)
-    private User findUser(int userId){
+    private User findUser(int userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, ValidationErrors.RESOURCE_NOT_FOUND));
     }
 }

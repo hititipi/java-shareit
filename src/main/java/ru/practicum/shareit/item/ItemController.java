@@ -39,7 +39,7 @@ public class ItemController {
                           @PathVariable("id") int itemId,
                           @RequestHeader(USER_ID_HEADER) int ownerId) {
         log.info(Messages.updateItem(itemDto.getId()));
-        Item item = itemService.updateItem(ItemMapper.toItem(itemDto,itemId), ownerId);
+        Item item = itemService.updateItem(ItemMapper.toItem(itemDto, itemId), ownerId);
         return ItemMapper.toItemDto(item);
     }
 
