@@ -17,7 +17,7 @@ public interface ItemService {
 
     Collection<ResponseItemDto> getAll(int userId);
 
-    Collection<Item> findItemsByText(String text);
+    Collection<ResponseItemDto> findItemsByText(String text);
 
     ResponseCommentDto createComment(CommentDto commentDto, int itemId, int userId);
 }

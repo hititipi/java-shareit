@@ -35,6 +35,8 @@ import static ru.practicum.shareit.validation.ValidationErrors.RESOURCE_NOT_FOUN
 @Transactional
 public class ItemServiceImpl implements ItemService {
 
+    private static final Comparator<Booking> BOOKING_COMPARATOR = Comparator.comparing(Booking::getStart);
+
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
@@ -90,6 +92,10 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ResponseItemDto> getAll(int userId) {
         User owner = findUser(userId);
         Collection<Item> items = itemRepository.findAllByOwnerOrderById(owner);
+        return toRespnseItemDto(items);
+    }
+
+    private Collection<ResponseItemDto> toRespnseItemDto(Collection<Item> items) {
         Map<Item, List<Booking>> bookingsByItem = findApprovedBookingsByItem(items);
         Map<Item, List<Comment>> comments = findComments(items);
         LocalDateTime now = LocalDateTime.now();
@@ -114,10 +120,10 @@ public class ItemServiceImpl implements ItemService {
         Booking lastBooking = null;
         Booking nextBooking = null;
         if (bookings != null && !bookings.isEmpty()) {
-            lastBooking = bookings.stream().sorted(Comparator.comparing(Booking::getStart))
+            lastBooking = bookings.stream().sorted(BOOKING_COMPARATOR)
                     .filter(booking -> booking.getStart().isBefore(now))
                     .findFirst().orElse(null);
-            nextBooking = bookings.stream().sorted(Comparator.comparing(Booking::getStart))
+            nextBooking = bookings.stream().sorted(BOOKING_COMPARATOR)
                     .filter(booking -> booking.getStart().isAfter(now))
                     .findFirst().orElse(null);
         }
@@ -126,11 +132,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Item> findItemsByText(String text) {
+    public Collection<ResponseItemDto> findItemsByText(String text) {
         if (text == null || text.isBlank()) {
             return Collections.EMPTY_LIST;
         }
-        return itemRepository.search(text);
+        List<Item> items = itemRepository.search(text);
+        return toRespnseItemDto(items);
     }
 
     @Override
@@ -146,7 +153,6 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.toResponseCommentDto(comment);
     }
 
-    @Transactional(readOnly = true)
     private User findUser(int userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, ValidationErrors.RESOURCE_NOT_FOUND));
     }

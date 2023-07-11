@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.utils.Messages;
 import ru.practicum.shareit.validation.marker.Create;
+import ru.practicum.shareit.validation.marker.Update;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -35,7 +36,7 @@ public class ItemController {
     }
 
     @PatchMapping("{id}")
-    public ItemDto update(@RequestBody ItemDto itemDto,
+    public ItemDto update(@Validated({Update.class}) @RequestBody ItemDto itemDto,
                           @PathVariable("id") int itemId,
                           @RequestHeader(USER_ID_HEADER) int ownerId) {
         log.info(Messages.updateItem(itemDto.getId()));
@@ -56,9 +57,9 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> findItemsByText(@RequestParam String text) {
+    public Collection<ResponseItemDto> findItemsByText(@RequestParam String text) {
         log.info(Messages.findItems(text));
-        return ItemMapper.toItemDto(itemService.findItemsByText(text));
+        return itemService.findItemsByText(text);
     }
 
     @PostMapping("/{itemId}/comment")
