@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,12 +12,15 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.CommentMapper;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ResponseCommentDto;
 import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.ValidationErrors;
@@ -41,11 +46,19 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
-    public Item addItem(Item item, int userId) {
+    public Item addItem(ItemDto itemDto, int userId) {
+        System.out.println("add item service1 " + itemDto);
         User user = findUser(userId);
+        Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
+        ItemRequest request = null;
+        if (itemDto.getRequestId() != null) {
+            request = itemRequestRepository.findById(itemDto.getRequestId()).orElse(null);
+        }
+        item.setItemRequest(request);
         return itemRepository.save(item);
     }
 
@@ -89,9 +102,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ResponseItemDto> getAll(int userId) {
+    public Collection<ResponseItemDto> getAll(int userId, int from, int size) {
         User owner = findUser(userId);
-        Collection<Item> items = itemRepository.findAllByOwnerOrderById(owner);
+        Pageable page = PageRequest.of(from / size, size);
+        Collection<Item> items = itemRepository.findAllByOwnerOrderById(owner, page).toList();
         return toRespnseItemDto(items);
     }
 
@@ -132,11 +146,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ResponseItemDto> findItemsByText(String text) {
+    public Collection<ResponseItemDto> findItemsByText(String text, int from, int size) {
         if (text == null || text.isBlank()) {
             return Collections.EMPTY_LIST;
         }
-        List<Item> items = itemRepository.search(text);
+        Pageable page = PageRequest.of(from / size, size);
+        List<Item> items = itemRepository.search(text, page);
         return toRespnseItemDto(items);
     }
 

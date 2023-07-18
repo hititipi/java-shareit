@@ -15,7 +15,12 @@ import ru.practicum.shareit.validation.marker.Create;
 import ru.practicum.shareit.validation.marker.Update;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
+import static ru.practicum.shareit.utils.Constants.DEFAULT_FROM_VALUE;
+import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
+
 
 @Slf4j
 @RestController
@@ -31,7 +36,7 @@ public class ItemController {
     public ItemDto add(@Validated({Create.class}) @RequestBody ItemDto itemDto,
                        @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.addItem());
-        Item item = itemService.addItem(ItemMapper.toItem(itemDto), userId);
+        Item item = itemService.addItem(itemDto, userId);
         return ItemMapper.toItemDto(item);
     }
 
@@ -45,9 +50,13 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ResponseItemDto> getAll(@RequestHeader(USER_ID_HEADER) int userId) {
+    public Collection<ResponseItemDto> getAll(@RequestHeader(USER_ID_HEADER) int userId,
+                                              @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                              @Min(0) int from,
+                                              @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                                  @Positive int size) {
         log.info(Messages.getAllItems(userId));
-        return itemService.getAll(userId);
+        return itemService.getAll(userId, from, size);
     }
 
     @GetMapping("{id}")
@@ -57,9 +66,13 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ResponseItemDto> findItemsByText(@RequestParam String text) {
+    public Collection<ResponseItemDto> findItemsByText(@RequestParam String text,
+                                                       @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                                       @Min(0) int from,
+                                                       @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                                           @Positive int size) {
         log.info(Messages.findItems(text));
-        return itemService.findItemsByText(text);
+        return itemService.findItemsByText(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
