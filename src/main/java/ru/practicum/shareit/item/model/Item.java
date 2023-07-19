@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @Builder
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "items")

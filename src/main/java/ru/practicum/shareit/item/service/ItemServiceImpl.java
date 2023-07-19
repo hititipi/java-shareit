@@ -50,7 +50,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item addItem(ItemDto itemDto, int userId) {
-        System.out.println("add item service1 " + itemDto);
         User user = findUser(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
@@ -88,13 +87,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public ResponseItemDto getItemForUser(int itemId, int userId) {
+        System.out.println("get item for user");
         Item item = getItem(itemId);
         List<Comment> comments = commentRepository.findByItemId(itemId);
         LocalDateTime now = LocalDateTime.now();
         Booking lastBooking = null;
         Booking nextBooking = null;
+        System.out.println("owner " + item.getOwner());
         if (item.getOwner().getId() == userId) {
             lastBooking = bookingRepository.findBookingByItemIdAndStartBefore(item.getId(), now, SORT_BY_START_DESC).stream().findFirst().orElse(null);
+            System.out.println("last booking " + lastBooking);
             nextBooking = bookingRepository.findBookingByItemIdAndStartAfterAndStatus(item.getId(), now, BookingStatus.APPROVED, SORT_BY_START).stream().findFirst().orElse(null);
         }
         return ItemMapper.toResponseItemDto(item, lastBooking, nextBooking, comments);
