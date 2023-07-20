@@ -26,7 +26,7 @@ import static ru.practicum.shareit.validation.ValidationErrors.RESOURCE_NOT_FOUN
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class IremRequestServiceImpl implements ItemRequestService {
+public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;

@@ -114,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
         Pageable page = PageRequest.of(from / size, size, SORT_BY_START_DESC);
         switch (state) {
             case CURRENT:
-                return bookingRepository.findBookingsByItemOwnerCurrent(owner, now, page/*SORT_BY_START_DESC*/).toList();
+                return bookingRepository.findBookingsByItemOwnerCurrent(owner, now, page).toList();
             case PAST:
                 return bookingRepository.findBookingByItemOwnerAndEndIsBefore(owner, now, page).toList();
             case FUTURE:

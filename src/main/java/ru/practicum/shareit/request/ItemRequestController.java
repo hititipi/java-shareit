@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
-import ru.practicum.shareit.request.service.IremRequestServiceImpl;
+import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.utils.Messages;
 import ru.practicum.shareit.validation.marker.Create;
 
@@ -25,7 +25,7 @@ import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
 @Validated
 public class ItemRequestController {
 
-    private final IremRequestServiceImpl itemRequestService;
+    private final ItemRequestServiceImpl itemRequestService;
 
     @PostMapping
     public ResponseItemRequestDto add(@Validated({Create.class}) @RequestBody ItemRequestDto requestDto,

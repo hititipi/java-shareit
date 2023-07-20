@@ -1,13 +1,11 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 @ToString
 public class ItemRequestDto {
 
