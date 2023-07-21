@@ -1,4 +1,4 @@
-package ru.practicum.shareit.boolking.service;
+package ru.practicum.shareit.booking.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -6,16 +6,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.booking.service.BookingServiceImpl;
-import ru.practicum.shareit.item.dto.ResponseCommentDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;

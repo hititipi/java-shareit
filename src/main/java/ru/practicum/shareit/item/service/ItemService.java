@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ItemService {
 
@@ -16,9 +17,9 @@ public interface ItemService {
 
     ResponseItemDto getItemForUser(int itemId, int userId);
 
-    Collection<ResponseItemDto> getAll(int userId, int from, int size);
+    List<ResponseItemDto> getAll(int userId, int from, int size);
 
-    Collection<ResponseItemDto> findItemsByText(String text, int from, int size);
+    List<ResponseItemDto> findItemsByText(String text, int from, int size);
 
     ResponseCommentDto createComment(CommentDto commentDto, int itemId, int userId);
 }

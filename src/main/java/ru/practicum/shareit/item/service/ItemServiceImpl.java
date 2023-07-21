@@ -104,14 +104,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ResponseItemDto> getAll(int userId, int from, int size) {
+    public List<ResponseItemDto> getAll(int userId, int from, int size) {
         User owner = findUser(userId);
         Pageable page = PageRequest.of(from / size, size);
         Collection<Item> items = itemRepository.findAllByOwnerOrderById(owner, page).toList();
-        return toRespnseItemDto(items);
+        return toResponseItemDto(items);
     }
 
-    private Collection<ResponseItemDto> toRespnseItemDto(Collection<Item> items) {
+    private List<ResponseItemDto> toResponseItemDto(Collection<Item> items) {
         Map<Item, List<Booking>> bookingsByItem = findApprovedBookingsByItem(items);
         Map<Item, List<Comment>> comments = findComments(items);
         LocalDateTime now = LocalDateTime.now();
@@ -148,13 +148,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<ResponseItemDto> findItemsByText(String text, int from, int size) {
+    public List<ResponseItemDto> findItemsByText(String text, int from, int size) {
         if (text == null || text.isBlank()) {
             return Collections.EMPTY_LIST;
         }
         Pageable page = PageRequest.of(from / size, size);
         List<Item> items = itemRepository.search(text, page);
-        return toRespnseItemDto(items);
+        return toResponseItemDto(items);
     }
 
     @Override

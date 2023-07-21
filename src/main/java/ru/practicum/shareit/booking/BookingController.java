@@ -47,7 +47,7 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseBookingDto findById(@PathVariable int bookingId,
+    public ResponseBookingDto getById(@PathVariable int bookingId,
                                        @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.findBooking(bookingId, userId));
         Booking booking = bookingService.getBookingForUser(bookingId, userId);
@@ -55,7 +55,7 @@ public class BookingController {
     }
 
     @GetMapping
-    public Collection<ResponseBookingDto> findAllBookings(@RequestParam(value = "state", defaultValue = "ALL") BookingState state,
+    public Collection<ResponseBookingDto> getAllBookings(@RequestParam(value = "state", defaultValue = "ALL") BookingState state,
                                                           @RequestHeader(USER_ID_HEADER) int userId,
                                                           @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
                                                           @Min(0) int from,
