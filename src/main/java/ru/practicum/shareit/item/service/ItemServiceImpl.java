@@ -112,7 +112,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private List<ResponseItemDto> toResponseItemDto(Collection<Item> items) {
+        System.out.println("TO RESPOONCE ITEM DTO");
         Map<Item, List<Booking>> bookingsByItem = findApprovedBookingsByItem(items);
+        System.out.println(bookingsByItem);
+
         Map<Item, List<Comment>> comments = findComments(items);
         LocalDateTime now = LocalDateTime.now();
         return items.stream()

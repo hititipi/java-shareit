@@ -141,47 +141,47 @@ public class BookingServiceTest {
 
         // CURRENT
         when(bookingRepository.findByBookerIdCurrent(eq(booker.getId()), any(LocalDateTime.class), eq(page))).thenReturn(pageResult);
-        List<Booking> result = bookingService.findAllBookings(BookingState.CURRENT, booker.getId(), 0, 20);
+        List<Booking> result = bookingService.getAllBookings(BookingState.CURRENT, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
         verify(bookingRepository, times(1)).findByBookerIdCurrent(eq(booker.getId()), any(LocalDateTime.class), eq(page));
         // PAST
         when(bookingRepository.findByBookerIdAndEndIsBefore(eq(booker.getId()), any(LocalDateTime.class), eq(page))).thenReturn(pageResult);
-        result = bookingService.findAllBookings(BookingState.PAST, booker.getId(), 0, 20);
+        result = bookingService.getAllBookings(BookingState.PAST, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
         verify(bookingRepository, times(1)).findByBookerIdAndEndIsBefore(eq(booker.getId()), any(LocalDateTime.class), eq(page));
         // FUTURE
         when(bookingRepository.findByBookerIdAndStartIsAfter(eq(booker.getId()), any(LocalDateTime.class), eq(page))).thenReturn(pageResult);
-        result = bookingService.findAllBookings(BookingState.FUTURE, booker.getId(), 0, 20);
+        result = bookingService.getAllBookings(BookingState.FUTURE, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
         verify(bookingRepository, times(1)).findByBookerIdAndStartIsAfter(eq(booker.getId()), any(LocalDateTime.class), eq(page));
         // WAITING
         when(bookingRepository.findByBookerIdAndStatus(booker.getId(),  BookingStatus.WAITING, page)).thenReturn(pageResult);
-        result = bookingService.findAllBookings(BookingState.WAITING, booker.getId(), 0, 20);
+        result = bookingService.getAllBookings(BookingState.WAITING, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
         verify(bookingRepository, times(1)).findByBookerIdAndStatus(booker.getId(),  BookingStatus.WAITING, page);
         // REJECTED
         when(bookingRepository.findByBookerIdAndStatus(booker.getId(),  BookingStatus.REJECTED, page)).thenReturn(pageResult);
-        result = bookingService.findAllBookings(BookingState.REJECTED, booker.getId(), 0, 20);
+        result = bookingService.getAllBookings(BookingState.REJECTED, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
         verify(bookingRepository, times(1)).findByBookerIdAndStatus(booker.getId(),  BookingStatus.REJECTED, page);
         // UNSUPPORTED_STATUS
         UnsupportedStatusException exception  = assertThrows(UnsupportedStatusException.class,
-                () -> bookingService.findAllBookings(BookingState.UNSUPPORTED_STATUS, booker.getId(), 0, 20));
+                () -> bookingService.getAllBookings(BookingState.UNSUPPORTED_STATUS, booker.getId(), 0, 20));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals(UNSUPPORTED_STATUS, exception.getMessage());
         // ALL
         when(bookingRepository.findByBookerId(booker.getId(),  page)).thenReturn(pageResult);
-        result = bookingService.findAllBookings(BookingState.ALL, booker.getId(), 0, 20);
+        result = bookingService.getAllBookings(BookingState.ALL, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));

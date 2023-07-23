@@ -12,25 +12,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.BookingController;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
-import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.utils.Messages;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -42,8 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.TestUtils.*;
 import static ru.practicum.shareit.item.ItemController.USER_ID_HEADER;
-import static ru.practicum.shareit.utils.Constants.DEFAULT_FROM_VALUE;
-import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
 
 @ExtendWith(MockitoExtension.class)
     public class BookingControllerTest {
@@ -76,10 +64,11 @@ import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
             LocalDateTime now = LocalDateTime.now().plusHours(1);
            // booking = Booking.builder().id(1).item(item).start(now).end(now.plusDays(1)).booker(booker).status(BookingStatus.WAITING).build();
 
-            postBookingDto = PostBookingDto.builder()
+            postBookingDto = new PostBookingDto(item.getId(), booking.getStart(), booking.getEnd());
+                   /* PostBookingDto.builder()
                     .itemId(item.getId())
                     .start(booking.getStart())
-                    .end(booking.getEnd()).build();
+                    .end(booking.getEnd()).build();*/
 
             responseBookingDto = BookingMapper.toResponseBookingDto(booking);
 
@@ -139,7 +128,7 @@ import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
 
     @Test
     public void getAllBookingsTest() throws Exception {
-        when(bookingService.findAllBookings(any(),any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(booking));
+        when(bookingService.getAllBookings(any(),any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(booking));
         BookingState state = BookingState.ALL;
         mvc.perform(get("/bookings?state={state}", state)
                         .content(mapper.writeValueAsString(booking))
@@ -156,7 +145,7 @@ import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
 
     @Test
     public void getAllBookingsTestWithPagination() throws Exception {
-        when(bookingService.findAllBookings(any(),any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(booking));
+        when(bookingService.getAllBookings(any(),any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(booking));
         BookingState state = BookingState.ALL;
         mvc.perform(get("/bookings?state={state}&from=0&size=10", state)
                         .content(mapper.writeValueAsString(booking))

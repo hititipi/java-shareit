@@ -34,6 +34,7 @@ public class BookingController {
     ResponseBookingDto add(@Valid @RequestBody PostBookingDto postBookingDto,
                            @RequestHeader(USER_ID_HEADER) int bookerId) {
         log.info(Messages.addBooking());
+        System.out.println(postBookingDto);
         Booking booking = bookingService.addBooking(postBookingDto, bookerId);
         return BookingMapper.toResponseBookingDto(booking);
     }
@@ -62,7 +63,7 @@ public class BookingController {
                                                           @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                                           @Positive int size) {
         log.info(Messages.findAllBookings(state, userId));
-        List<Booking> bookings = bookingService.findAllBookings(state, userId, from, size);
+        List<Booking> bookings = bookingService.getAllBookings(state, userId, from, size);
         return BookingMapper.toBookingReferencedDto(bookings);
     }
 

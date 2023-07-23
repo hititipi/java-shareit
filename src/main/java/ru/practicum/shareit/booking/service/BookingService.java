@@ -13,11 +13,11 @@ public interface BookingService {
 
     Booking approve(int bookingId, boolean approved, int userId);
 
-    Booking getBooking(int bookingId);
+    Booking getBookingById(int bookingId);
 
     Booking getBookingForUser(int bookingId, int userId);
 
-    List<Booking> findAllBookings(BookingState state, int userId, int from, int size);
+    List<Booking> getAllBookings(BookingState state, int userId, int from, int size);
 
     Collection<Booking> getAllBookingForOwner(BookingState state, int ownerId, int from, int size);
 }

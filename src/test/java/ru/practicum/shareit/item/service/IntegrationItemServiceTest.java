@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.function.AsyncServerResponse;
+import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.*;
+
 import static org.hamcrest.Matchers.notNullValue;
 import static ru.practicum.shareit.TestUtils.*;
 
@@ -53,16 +57,39 @@ public class IntegrationItemServiceTest {
         Booking lastBooking = bookingService.addBooking(postLastBookingDto, createdBooker.getId());
         bookingService.approve(lastBooking.getId(), true, createdOwner.getId());
         PostBookingDto nextBookingDto = PostBookingDto.builder().itemId(createdItem.getId()).start(LocalDateTime.now().plusDays(1)).end(LocalDateTime.now().plusDays(2)).build();
-        bookingService.addBooking(nextBookingDto, createdBooker.getId());
+        Booking nextBooking = bookingService.addBooking(nextBookingDto, createdBooker.getId());
+        bookingService.approve(nextBooking.getId(), true, createdOwner.getId());
+
+
+        System.out.println("  ==================");
+        System.out.println(nextBooking);
+        System.out.println("  ==================");
+
+
         CommentDto commentDto = new CommentDto("comment");
         itemService.createComment(commentDto, createdItem.getId(), createdBooker.getId());
 
         List<ResponseItemDto> result = itemService.getAll(createdOwner.getId(),0,20);
+
+       // System.out.println(responseItemDto);
+
+      //  System.out.println(responseItemDto.getLastBooking());
+
+        assertNotNull(result);
+        assertEquals(result.size(), 1);
+
         ResponseItemDto responseItemDto = result.get(0);
 
-        assertThat(responseItemDto.getId(), equalTo(createdItem.getId()));
-        assertThat(responseItemDto.getName(), equalTo(createdItem.getName()));
-        assertThat(responseItemDto.getAvailable(), equalTo(createdItem.getAvailable()));
+        assertNotNull(responseItemDto);
+
+        assertEquals(responseItemDto.getId(), createdItem.getId());
+        assertEquals(responseItemDto.getName(), createdItem.getName());
+        assertEquals(responseItemDto.getAvailable(), createdItem.getAvailable());
+        assertEquals(responseItemDto.getDescription(),createdItem.getDescription());
+        assertEquals(responseItemDto.getLastBooking(), BookingMapper.toBookingReferencedDto(lastBooking));
+        assertEquals(responseItemDto.getNextBooking(), BookingMapper.toBookingReferencedDto(nextBooking));
+        assertNotNull(responseItemDto.getComments());
+        assertEquals(responseItemDto.getComments().size() ,1);
 
         userService.deleteUser(createdOwner.getId());
         userService.deleteUser(createdBooker.getId());

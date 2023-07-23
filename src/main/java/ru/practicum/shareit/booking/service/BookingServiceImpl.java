@@ -54,7 +54,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking approve(int bookingId, boolean approved, int userId) {
-        Booking booking = getBooking(bookingId);
+        Booking booking = getBookingById(bookingId);
         if (booking.getItem().getOwner().getId() != userId) {
             throw new ValidationException(HttpStatus.NOT_FOUND, INVALID_USER_ID);
         }
@@ -67,14 +67,14 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public Booking getBooking(int bookingId) {
+    public Booking getBookingById(int bookingId) {
         return bookingRepository.findById(bookingId).orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, RESOURCE_NOT_FOUND));
     }
 
     @Override
     @Transactional(readOnly = true)
     public Booking getBookingForUser(int bookingId, int userId) {
-        Booking booking = getBooking(bookingId);
+        Booking booking = getBookingById(bookingId);
         if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
             throw new ValidationException(HttpStatus.NOT_FOUND, INVALID_USER_ID);
         }
@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Booking> findAllBookings(BookingState state, int userId, int from, int size) {
+    public List<Booking> getAllBookings(BookingState state, int userId, int from, int size) {
         findUser(userId); // check
         LocalDateTime now = LocalDateTime.now();
         Pageable page = PageRequest.of(from / size, size, SORT_BY_START_DESC);
