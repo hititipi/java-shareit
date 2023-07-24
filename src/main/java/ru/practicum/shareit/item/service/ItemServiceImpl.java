@@ -12,7 +12,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.CommentMapper;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.PostItemDto;
 import ru.practicum.shareit.item.dto.ResponseCommentDto;
 import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -49,13 +49,13 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRequestRepository itemRequestRepository;
 
     @Override
-    public Item addItem(ItemDto itemDto, int userId) {
+    public Item addItem(PostItemDto postItemDto, int userId) {
         User user = findUser(userId);
-        Item item = ItemMapper.toItem(itemDto);
+        Item item = ItemMapper.toItem(postItemDto);
         item.setOwner(user);
         ItemRequest request = null;
-        if (itemDto.getRequestId() != null) {
-            request = itemRequestRepository.findById(itemDto.getRequestId()).orElse(null);
+        if (postItemDto.getRequestId() != null) {
+            request = itemRequestRepository.findById(postItemDto.getRequestId()).orElse(null);
         }
         item.setItemRequest(request);
         return itemRepository.save(item);

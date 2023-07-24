@@ -29,6 +29,9 @@ public class IntegrationUserServiceTest {
     public void getUserByIdTest() {
         User savedUser = userService.createUser(owner);
         User gottenUser = userService.getUser(savedUser.getId());
+
+        // надо получить пользователя через EntityManger и сним сравнить
+
         assertThat(gottenUser.getId(), notNullValue());
         assertThat(gottenUser.getName(), equalTo(owner.getName()));
         assertThat(gottenUser.getEmail(), equalTo(owner.getEmail()));

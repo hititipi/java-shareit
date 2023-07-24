@@ -18,6 +18,7 @@ public class ItemRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="request_id")
     private int id;
     @NotNull
     private String description;

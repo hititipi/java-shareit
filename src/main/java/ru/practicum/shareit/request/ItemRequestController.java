@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.PostItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.utils.Messages;
 import ru.practicum.shareit.validation.marker.Create;
 
@@ -29,7 +28,7 @@ public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
     @PostMapping
-    public ResponseItemRequestDto add(@Validated({Create.class}) @RequestBody ItemRequestDto requestDto,
+    public ResponseItemRequestDto add(@Validated({Create.class}) @RequestBody PostItemRequestDto requestDto,
                                       @RequestHeader("X-Sharer-User-Id") int requesterId) {
         log.info(Messages.addItemRequest(requesterId));
         ItemRequest request = ItemRequestMapper.toItemRequest(requestDto);

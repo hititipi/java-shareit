@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.item.ItemController;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.PostItemDto;
 import ru.practicum.shareit.item.dto.ResponseCommentDto;
 import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -46,7 +46,7 @@ public class ItemControllerTest {
     private final ObjectMapper mapper = new ObjectMapper();
     private MockMvc mvc;
     private Item item;
-    private ItemDto itemDto;
+    private PostItemDto postItemDto;
     private ResponseItemDto responseItemDto;
 
     @BeforeEach
@@ -65,7 +65,7 @@ public class ItemControllerTest {
                 .available(true).owner(owner).itemRequest(request).build();
 
 
-        itemDto = ItemDto.builder().id(item.getId()).name(item.getName()).description(item.getDescription())
+        postItemDto = PostItemDto.builder().id(item.getId()).name(item.getName()).description(item.getDescription())
                 .available(item.getAvailable()).requestId(item.getItemRequest().getId()).build();
 
         responseItemDto = ResponseItemDto.builder().id(item.getId()).name(item.getName()).description(item.getDescription())
@@ -77,17 +77,17 @@ public class ItemControllerTest {
         when(itemService.addItem(any(), any(Integer.class))).thenReturn(item);
 
         mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
+                        .content(mapper.writeValueAsString(postItemDto))
                         .header("X-Sharer-User-Id", 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(itemDto.getId()), Integer.class))
-                .andExpect(jsonPath("$.name", is(itemDto.getName())))
-                .andExpect(jsonPath("$.description", is(itemDto.getDescription())))
-                .andExpect(jsonPath("$.available", is(itemDto.getAvailable())))
-                .andExpect(jsonPath("$.requestId", is(itemDto.getRequestId())));
+                .andExpect(jsonPath("$.id", is(postItemDto.getId()), Integer.class))
+                .andExpect(jsonPath("$.name", is(postItemDto.getName())))
+                .andExpect(jsonPath("$.description", is(postItemDto.getDescription())))
+                .andExpect(jsonPath("$.available", is(postItemDto.getAvailable())))
+                .andExpect(jsonPath("$.requestId", is(postItemDto.getRequestId())));
     }
 
     @Test
@@ -114,17 +114,17 @@ public class ItemControllerTest {
         when(itemService.updateItem(any(), any(Integer.class))).thenReturn(item);
 
         mvc.perform(patch("/items/1")
-                        .content(mapper.writeValueAsString(itemDto))
+                        .content(mapper.writeValueAsString(postItemDto))
                         .header("X-Sharer-User-Id", 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(itemDto.getId()), Integer.class))
-                .andExpect(jsonPath("$.name", is(itemDto.getName())))
-                .andExpect(jsonPath("$.description", is(itemDto.getDescription())))
-                .andExpect(jsonPath("$.available", is(itemDto.getAvailable())))
-                .andExpect(jsonPath("$.requestId", is(itemDto.getRequestId())));
+                .andExpect(jsonPath("$.id", is(postItemDto.getId()), Integer.class))
+                .andExpect(jsonPath("$.name", is(postItemDto.getName())))
+                .andExpect(jsonPath("$.description", is(postItemDto.getDescription())))
+                .andExpect(jsonPath("$.available", is(postItemDto.getAvailable())))
+                .andExpect(jsonPath("$.requestId", is(postItemDto.getRequestId())));
     }
 
     @Test
@@ -137,11 +137,11 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(itemDto.getId()), Integer.class))
-                .andExpect(jsonPath("$.name", is(itemDto.getName())))
-                .andExpect(jsonPath("$.description", is(itemDto.getDescription())))
-                .andExpect(jsonPath("$.available", is(itemDto.getAvailable())))
-                .andExpect(jsonPath("$.requestId", is(itemDto.getRequestId())));
+                .andExpect(jsonPath("$.id", is(postItemDto.getId()), Integer.class))
+                .andExpect(jsonPath("$.name", is(postItemDto.getName())))
+                .andExpect(jsonPath("$.description", is(postItemDto.getDescription())))
+                .andExpect(jsonPath("$.available", is(postItemDto.getAvailable())))
+                .andExpect(jsonPath("$.requestId", is(postItemDto.getRequestId())));
     }
 
     @Test
@@ -154,11 +154,11 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].id", containsInAnyOrder(itemDto.getId())))
-                .andExpect(jsonPath("$[*].name", containsInAnyOrder(itemDto.getName())))
-                .andExpect(jsonPath("$[*].description", containsInAnyOrder(itemDto.getDescription())))
-                .andExpect(jsonPath("$[*].available", containsInAnyOrder(itemDto.getAvailable())))
-                .andExpect(jsonPath("$[*].requestId", containsInAnyOrder(itemDto.getRequestId())));
+                .andExpect(jsonPath("$[*].id", containsInAnyOrder(postItemDto.getId())))
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder(postItemDto.getName())))
+                .andExpect(jsonPath("$[*].description", containsInAnyOrder(postItemDto.getDescription())))
+                .andExpect(jsonPath("$[*].available", containsInAnyOrder(postItemDto.getAvailable())))
+                .andExpect(jsonPath("$[*].requestId", containsInAnyOrder(postItemDto.getRequestId())));
     }
 
     @Test
@@ -171,11 +171,11 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].id", containsInAnyOrder(itemDto.getId())))
-                .andExpect(jsonPath("$[*].name", containsInAnyOrder(itemDto.getName())))
-                .andExpect(jsonPath("$[*].description", containsInAnyOrder(itemDto.getDescription())))
-                .andExpect(jsonPath("$[*].available", containsInAnyOrder(itemDto.getAvailable())))
-                .andExpect(jsonPath("$[*].requestId", containsInAnyOrder(itemDto.getRequestId())));
+                .andExpect(jsonPath("$[*].id", containsInAnyOrder(postItemDto.getId())))
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder(postItemDto.getName())))
+                .andExpect(jsonPath("$[*].description", containsInAnyOrder(postItemDto.getDescription())))
+                .andExpect(jsonPath("$[*].available", containsInAnyOrder(postItemDto.getAvailable())))
+                .andExpect(jsonPath("$[*].requestId", containsInAnyOrder(postItemDto.getRequestId())));
     }
 
     @Test
@@ -188,11 +188,11 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].id", containsInAnyOrder(itemDto.getId())))
-                .andExpect(jsonPath("$[*].name", containsInAnyOrder(itemDto.getName())))
-                .andExpect(jsonPath("$[*].description", containsInAnyOrder(itemDto.getDescription())))
-                .andExpect(jsonPath("$[*].available", containsInAnyOrder(itemDto.getAvailable())))
-                .andExpect(jsonPath("$[*].requestId", containsInAnyOrder(itemDto.getRequestId())));
+                .andExpect(jsonPath("$[*].id", containsInAnyOrder(postItemDto.getId())))
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder(postItemDto.getName())))
+                .andExpect(jsonPath("$[*].description", containsInAnyOrder(postItemDto.getDescription())))
+                .andExpect(jsonPath("$[*].available", containsInAnyOrder(postItemDto.getAvailable())))
+                .andExpect(jsonPath("$[*].requestId", containsInAnyOrder(postItemDto.getRequestId())));
     }
 
     @Test
@@ -205,10 +205,10 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].id", containsInAnyOrder(itemDto.getId())))
-                .andExpect(jsonPath("$[*].name", containsInAnyOrder(itemDto.getName())))
-                .andExpect(jsonPath("$[*].description", containsInAnyOrder(itemDto.getDescription())))
-                .andExpect(jsonPath("$[*].available", containsInAnyOrder(itemDto.getAvailable())))
-                .andExpect(jsonPath("$[*].requestId", containsInAnyOrder(itemDto.getRequestId())));
+                .andExpect(jsonPath("$[*].id", containsInAnyOrder(postItemDto.getId())))
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder(postItemDto.getName())))
+                .andExpect(jsonPath("$[*].description", containsInAnyOrder(postItemDto.getDescription())))
+                .andExpect(jsonPath("$[*].available", containsInAnyOrder(postItemDto.getAvailable())))
+                .andExpect(jsonPath("$[*].requestId", containsInAnyOrder(postItemDto.getRequestId())));
     }
 }

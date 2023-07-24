@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.PostItemDto;
 import ru.practicum.shareit.item.dto.ResponseCommentDto;
 import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -33,19 +33,19 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto add(@Validated({Create.class}) @RequestBody ItemDto itemDto,
-                       @RequestHeader(USER_ID_HEADER) int userId) {
+    public PostItemDto add(@Validated({Create.class}) @RequestBody PostItemDto postItemDto,
+                           @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.addItem());
-        Item item = itemService.addItem(itemDto, userId);
+        Item item = itemService.addItem(postItemDto, userId);
         return ItemMapper.toItemDto(item);
     }
 
     @PatchMapping("{id}")
-    public ItemDto update(@Validated({Update.class}) @RequestBody ItemDto itemDto,
-                          @PathVariable("id") int itemId,
-                          @RequestHeader(USER_ID_HEADER) int ownerId) {
-        log.info(Messages.updateItem(itemDto.getId()));
-        Item item = itemService.updateItem(ItemMapper.toItem(itemDto, itemId), ownerId);
+    public PostItemDto update(@Validated({Update.class}) @RequestBody PostItemDto postItemDto,
+                              @PathVariable("id") int itemId,
+                              @RequestHeader(USER_ID_HEADER) int ownerId) {
+        log.info(Messages.updateItem(postItemDto.getId()));
+        Item item = itemService.updateItem(ItemMapper.toItem(postItemDto, itemId), ownerId);
         return ItemMapper.toItemDto(item);
     }
 

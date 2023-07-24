@@ -11,7 +11,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.CommentMapper;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.PostItemDto;
 import ru.practicum.shareit.item.dto.ResponseCommentDto;
 import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -46,17 +46,17 @@ public class ItemServiceTest {
 
     @Test
     void addItemTest() {
-        ItemDto itemDto = new ItemDto(1, "item_name", "item_description", true, 1);
+        PostItemDto postItemDto = new PostItemDto(1, "item_name", "item_description", true, 1);
         User user = new User(1, "user_name", "user@mail.com");
         ItemRequest itemRequest = new ItemRequest(1, "description", user, LocalDateTime.now());
-        Item item = ItemMapper.toItem(itemDto);
+        Item item = ItemMapper.toItem(postItemDto);
         item.setOwner(user);
         item.setItemRequest(itemRequest);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(itemRequestRepository.findById(1)).thenReturn(Optional.of(itemRequest));
         when(itemRepository.save(any(Item.class))).thenReturn(item);
 
-        Item createdItem = itemService.addItem(itemDto, 1);
+        Item createdItem = itemService.addItem(postItemDto, 1);
 
         assertNotNull(createdItem);
         assertEquals(createdItem, item);

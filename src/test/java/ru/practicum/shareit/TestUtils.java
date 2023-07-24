@@ -2,6 +2,8 @@ package ru.practicum.shareit;
 
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.PostItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -19,6 +21,8 @@ public class TestUtils {
 
 
     public static Item item = Item.builder().id(1).name("item").description("description").available(true).owner(owner).itemRequest(request).build();
+    public static PostItemDto postItemDto = ItemMapper.toItemDto(item);
+
 
     public static Booking booking = Booking.builder().id(1).item(item).start(now).end(now.plusDays(1)).booker(booker).status(BookingStatus.WAITING).build();
 

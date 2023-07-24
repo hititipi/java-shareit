@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Builder
 @ToString
-public class ItemDto {
+public class PostItemDto {
 
     private int id;
     @NotBlank(groups = {Create.class})
