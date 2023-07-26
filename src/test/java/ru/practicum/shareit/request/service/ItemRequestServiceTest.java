@@ -30,7 +30,6 @@ public class ItemRequestServiceTest {
     private final ItemRepository itemRepository = mock(ItemRepository.class);
     private ItemRequestService itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, userRepository, itemRepository);
 
-
     @Test
     void createItemRequestTest() {
         User requester = new User(1, "user1", "user1@mail.com");
@@ -57,8 +56,8 @@ public class ItemRequestServiceTest {
         when(itemRequestRepository.findRequestByRequesterIdOrderByCreatedDesc(requester.getId())).thenReturn(requests);
         when(itemRepository.findAllByRequestIdIn(requests)).thenReturn(items);
 
-        ResponseItemRequestDto responseItemRequestDto = ResponseItemRequestDto.builder().
-                id(request.getId()).description(request.getDescription())
+        ResponseItemRequestDto responseItemRequestDto = ResponseItemRequestDto.builder()
+                .id(request.getId()).description(request.getDescription())
                 .items(ItemMapper.toItemForRequestDto(items)).build();
         List<ResponseItemRequestDto> result = itemRequestService.getForOwner(requester.getId());
 
@@ -84,8 +83,8 @@ public class ItemRequestServiceTest {
         when(itemRequestRepository.findAllForUser(eq(user.getId()), any(Pageable.class))).thenReturn(requestsPage);
         when(itemRepository.findAllByRequestIdIn(requests)).thenReturn(items);
 
-        ResponseItemRequestDto responseItemRequestDto = ResponseItemRequestDto.builder().
-                id(request.getId()).description(request.getDescription())
+        ResponseItemRequestDto responseItemRequestDto = ResponseItemRequestDto.builder()
+                .id(request.getId()).description(request.getDescription())
                 .items(ItemMapper.toItemForRequestDto(items)).build();
         List<ResponseItemRequestDto> result = itemRequestService.findAll(0, 20, user.getId());
 
@@ -108,8 +107,8 @@ public class ItemRequestServiceTest {
         List<Item> items = List.of(item1);
         when(itemRepository.findAllByItemRequest(request)).thenReturn(items);
 
-        ResponseItemRequestDto responseItemRequestDto = ResponseItemRequestDto.builder().
-                id(request.getId()).description(request.getDescription())
+        ResponseItemRequestDto responseItemRequestDto = ResponseItemRequestDto.builder()
+                .id(request.getId()).description(request.getDescription())
                 .items(ItemMapper.toItemForRequestDto(items)).build();
         ResponseItemRequestDto result = itemRequestService.findById(request.getId(), user.getId());
 
