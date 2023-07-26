@@ -26,21 +26,20 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static ru.practicum.shareit.utils.Sorts.SORT_BY_START_DESC;
 import static ru.practicum.shareit.validation.ValidationErrors.*;
 
 public class BookingServiceTest {
 
     private final BookingRepository bookingRepository = mock((BookingRepository.class));
-    private final ItemRepository itemRepository  = mock(ItemRepository.class);
-    private final UserRepository userRepository  = mock(UserRepository.class);
+    private final ItemRepository itemRepository = mock(ItemRepository.class);
+    private final UserRepository userRepository = mock(UserRepository.class);
 
     private final BookingService bookingService = new BookingServiceImpl(bookingRepository, itemRepository, userRepository);
 
 
     @Test
-    void addBookingTest(){
+    void addBookingTest() {
         // owner = userID
         User owner = new User(1, "user1", "user1@mail.com");
         User booker = new User(2, "user2", "user2@mail.com");
@@ -78,7 +77,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void approveTest(){
+    void approveTest() {
         User owner = new User(1, "user1", "user1@mail.com");
         User booker = new User(2, "user2", "user2@mail.com");
         Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
@@ -110,7 +109,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void getBookingForUser(){
+    void getBookingForUser() {
         User owner = new User(1, "user1", "user1@mail.com");
         User booker = new User(2, "user2", "user2@mail.com");
         Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
@@ -130,7 +129,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void findAllBookingsTest(){
+    void findAllBookingsTest() {
         User owner = new User(1, "user1", "user1@mail.com");
         User booker = new User(2, "user2", "user2@mail.com");
         Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
@@ -161,26 +160,26 @@ public class BookingServiceTest {
         assertTrue(result.contains(booking));
         verify(bookingRepository, times(1)).findByBookerIdAndStartIsAfter(eq(booker.getId()), any(LocalDateTime.class), eq(page));
         // WAITING
-        when(bookingRepository.findByBookerIdAndStatus(booker.getId(),  BookingStatus.WAITING, page)).thenReturn(pageResult);
+        when(bookingRepository.findByBookerIdAndStatus(booker.getId(), BookingStatus.WAITING, page)).thenReturn(pageResult);
         result = bookingService.getAllBookings(BookingState.WAITING, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
-        verify(bookingRepository, times(1)).findByBookerIdAndStatus(booker.getId(),  BookingStatus.WAITING, page);
+        verify(bookingRepository, times(1)).findByBookerIdAndStatus(booker.getId(), BookingStatus.WAITING, page);
         // REJECTED
-        when(bookingRepository.findByBookerIdAndStatus(booker.getId(),  BookingStatus.REJECTED, page)).thenReturn(pageResult);
+        when(bookingRepository.findByBookerIdAndStatus(booker.getId(), BookingStatus.REJECTED, page)).thenReturn(pageResult);
         result = bookingService.getAllBookings(BookingState.REJECTED, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
-        verify(bookingRepository, times(1)).findByBookerIdAndStatus(booker.getId(),  BookingStatus.REJECTED, page);
+        verify(bookingRepository, times(1)).findByBookerIdAndStatus(booker.getId(), BookingStatus.REJECTED, page);
         // UNSUPPORTED_STATUS
-        UnsupportedStatusException exception  = assertThrows(UnsupportedStatusException.class,
+        UnsupportedStatusException exception = assertThrows(UnsupportedStatusException.class,
                 () -> bookingService.getAllBookings(BookingState.UNSUPPORTED_STATUS, booker.getId(), 0, 20));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals(UNSUPPORTED_STATUS, exception.getMessage());
         // ALL
-        when(bookingRepository.findByBookerId(booker.getId(),  page)).thenReturn(pageResult);
+        when(bookingRepository.findByBookerId(booker.getId(), page)).thenReturn(pageResult);
         result = bookingService.getAllBookings(BookingState.ALL, booker.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -189,7 +188,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    void findAllBookingsForOwnerTest(){
+    void findAllBookingsForOwnerTest() {
         User owner = new User(1, "user1", "user1@mail.com");
         User booker = new User(2, "user2", "user2@mail.com");
         Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
@@ -222,21 +221,21 @@ public class BookingServiceTest {
         assertTrue(result.contains(booking));
         verify(bookingRepository, times(1)).findBookingByItemOwnerAndStartIsAfter(eq(owner), any(LocalDateTime.class), eq(page));
         // WAITING
-        when(bookingRepository.findBookingByItemOwnerAndStatus(owner,  BookingStatus.WAITING, page)).thenReturn(pageResult);
+        when(bookingRepository.findBookingByItemOwnerAndStatus(owner, BookingStatus.WAITING, page)).thenReturn(pageResult);
         result = bookingService.getAllBookingForOwner(BookingState.WAITING, owner.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
-        verify(bookingRepository, times(1)).findBookingByItemOwnerAndStatus(owner,  BookingStatus.WAITING, page);
+        verify(bookingRepository, times(1)).findBookingByItemOwnerAndStatus(owner, BookingStatus.WAITING, page);
         // REJECTED
-        when(bookingRepository.findBookingByItemOwnerAndStatus(owner,  BookingStatus.REJECTED, page)).thenReturn(pageResult);
+        when(bookingRepository.findBookingByItemOwnerAndStatus(owner, BookingStatus.REJECTED, page)).thenReturn(pageResult);
         result = bookingService.getAllBookingForOwner(BookingState.REJECTED, owner.getId(), 0, 20);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertTrue(result.contains(booking));
-        verify(bookingRepository, times(1)).findBookingByItemOwnerAndStatus(owner,  BookingStatus.REJECTED, page);
+        verify(bookingRepository, times(1)).findBookingByItemOwnerAndStatus(owner, BookingStatus.REJECTED, page);
         // UNSUPPORTED_STATUS
-        UnsupportedStatusException exception  = assertThrows(UnsupportedStatusException.class,
+        UnsupportedStatusException exception = assertThrows(UnsupportedStatusException.class,
                 () -> bookingService.getAllBookingForOwner(BookingState.UNSUPPORTED_STATUS, owner.getId(), 0, 20));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals(UNSUPPORTED_STATUS, exception.getMessage());

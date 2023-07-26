@@ -6,7 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.*;
+import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
@@ -127,7 +128,7 @@ public class BookingServiceImpl implements BookingService {
                 throw new UnsupportedStatusException(HttpStatus.BAD_REQUEST, UNSUPPORTED_STATUS);
             case ALL:
             default:
-                return bookingRepository.findBookingByItemOwner(owner,  page).toList();
+                return bookingRepository.findBookingByItemOwner(owner, page).toList();
         }
     }
 

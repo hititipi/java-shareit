@@ -154,7 +154,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findBookingByItemIdAndStartAfterAndStatusTest(){
+    void findBookingByItemIdAndStartAfterAndStatusTest() {
         List<Booking> result = bookingRepository
                 .findBookingByItemIdAndStartAfterAndStatus(item.getId(), LocalDateTime.now(), bookingStatus, Sort.unsorted());
         assertNotNull(result);
@@ -171,7 +171,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findBookingByItemIdAndBookerIdAndStatusAndStartBeforeTest(){
+    void findBookingByItemIdAndBookerIdAndStatusAndStartBeforeTest() {
         List<Booking> result = bookingRepository.findBookingByItemIdAndBookerIdAndStatusAndStartBefore
                 (item.getId(), booker.getId(), bookingStatus, LocalDateTime.now().plusDays(3));
         assertNotNull(result);
@@ -180,7 +180,7 @@ public class BookingRepositoryTest {
     }
 
     @Test
-    void findBookingByItemInAndStatusTest(){
+    void findBookingByItemInAndStatusTest() {
         List<Booking> result = bookingRepository.findBookingByItemInAndStatus
                 (List.of(item), bookingStatus);
         assertNotNull(result);

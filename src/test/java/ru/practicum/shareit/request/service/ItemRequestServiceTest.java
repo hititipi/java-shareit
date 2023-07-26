@@ -17,10 +17,10 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static ru.practicum.shareit.utils.Sorts.SORT_BY_START_DESC;
 
 public class ItemRequestServiceTest {

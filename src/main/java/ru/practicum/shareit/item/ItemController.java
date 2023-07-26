@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
+
 import static ru.practicum.shareit.utils.Constants.DEFAULT_FROM_VALUE;
 import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
 
@@ -54,7 +55,7 @@ public class ItemController {
                                               @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
                                               @Min(0) int from,
                                               @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
-                                                  @Positive int size) {
+                                              @Positive int size) {
         log.info(Messages.getAllItems(userId));
         return itemService.getAll(userId, from, size);
     }
@@ -70,7 +71,7 @@ public class ItemController {
                                                        @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
                                                        @Min(0) int from,
                                                        @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
-                                                           @Positive int size) {
+                                                       @Positive int size) {
         log.info(Messages.findItems(text));
         return itemService.findItemsByText(text, from, size);
     }

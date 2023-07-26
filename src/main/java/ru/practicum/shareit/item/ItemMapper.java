@@ -1,13 +1,13 @@
 package ru.practicum.shareit.item;
 
 import lombok.experimental.UtilityClass;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.PostItemDto;
 import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.dto.ItemRequestDto;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -56,7 +56,7 @@ public class ItemMapper {
         return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
-    public ItemRequestDto toItemForRequestDto(Item item){
+    public ItemRequestDto toItemForRequestDto(Item item) {
         return ItemRequestDto.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -66,8 +66,8 @@ public class ItemMapper {
                 .build();
     }
 
-    public List<ItemRequestDto> toItemForRequestDto(List<Item> items){
-        if (items == null){
+    public List<ItemRequestDto> toItemForRequestDto(List<Item> items) {
+        if (items == null) {
             return Collections.EMPTY_LIST;
         }
         return items.stream().map(ItemMapper::toItemForRequestDto).collect(Collectors.toList());

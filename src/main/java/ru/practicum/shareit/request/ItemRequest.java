@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import lombok.*;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -18,7 +17,7 @@ public class ItemRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="request_id")
+    @Column(name = "request_id")
     private int id;
     @NotNull
     private String description;

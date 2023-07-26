@@ -20,10 +20,8 @@ import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
-import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -37,7 +35,7 @@ public class IntegrationItemServiceTest {
 
 
     @Test
-    void getAllTest(){
+    void getAllTest() {
         User createdOwner = userService.createUser(User.builder().name("user").email("user@mail.com").build());
         User createdBooker = userService.createUser(User.builder().name("user2").email("user2@mail.com").build());
         Item createdItem = itemService.addItem(PostItemDto.builder().name("item1").description("description1").available(true).build(), createdOwner.getId());
@@ -57,11 +55,11 @@ public class IntegrationItemServiceTest {
         CommentDto commentDto = new CommentDto("comment");
         itemService.createComment(commentDto, createdItem.getId(), createdBooker.getId());
 
-        List<ResponseItemDto> result = itemService.getAll(createdOwner.getId(),0,20);
+        List<ResponseItemDto> result = itemService.getAll(createdOwner.getId(), 0, 20);
 
-       // System.out.println(responseItemDto);
+        // System.out.println(responseItemDto);
 
-      //  System.out.println(responseItemDto.getLastBooking());
+        //  System.out.println(responseItemDto.getLastBooking());
 
         assertNotNull(result);
         assertEquals(result.size(), 1);
@@ -73,11 +71,11 @@ public class IntegrationItemServiceTest {
         assertEquals(responseItemDto.getId(), createdItem.getId());
         assertEquals(responseItemDto.getName(), createdItem.getName());
         assertEquals(responseItemDto.getAvailable(), createdItem.getAvailable());
-        assertEquals(responseItemDto.getDescription(),createdItem.getDescription());
+        assertEquals(responseItemDto.getDescription(), createdItem.getDescription());
         assertEquals(responseItemDto.getLastBooking(), BookingMapper.toBookingReferencedDto(lastBooking));
         assertEquals(responseItemDto.getNextBooking(), BookingMapper.toBookingReferencedDto(nextBooking));
         assertNotNull(responseItemDto.getComments());
-        assertEquals(responseItemDto.getComments().size() ,1);
+        assertEquals(responseItemDto.getComments().size(), 1);
 
         userService.deleteUser(createdOwner.getId());
         userService.deleteUser(createdBooker.getId());

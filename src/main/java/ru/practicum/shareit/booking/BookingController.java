@@ -49,7 +49,7 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     public ResponseBookingDto getById(@PathVariable int bookingId,
-                                       @RequestHeader(USER_ID_HEADER) int userId) {
+                                      @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.findBooking(bookingId, userId));
         Booking booking = bookingService.getBookingForUser(bookingId, userId);
         return BookingMapper.toResponseBookingDto(booking);
@@ -57,11 +57,11 @@ public class BookingController {
 
     @GetMapping
     public Collection<ResponseBookingDto> getAllBookings(@RequestParam(value = "state", defaultValue = "ALL") BookingState state,
-                                                          @RequestHeader(USER_ID_HEADER) int userId,
-                                                          @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                                          @Min(0) int from,
-                                                          @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
-                                                          @Positive int size) {
+                                                         @RequestHeader(USER_ID_HEADER) int userId,
+                                                         @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                                         @Min(0) int from,
+                                                         @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                                         @Positive int size) {
         log.info(Messages.findAllBookings(state, userId));
         List<Booking> bookings = bookingService.getAllBookings(state, userId, from, size);
         return BookingMapper.toBookingReferencedDto(bookings);

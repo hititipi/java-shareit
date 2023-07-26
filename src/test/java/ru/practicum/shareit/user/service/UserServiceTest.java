@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.service;
 
 import org.junit.jupiter.api.Test;
-
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -23,13 +22,13 @@ public class UserServiceTest {
     }*/
 
     @Test
-    void getUserTest(){
+    void getUserTest() {
         User user = new User(1, "user1", "user1@mail.com");
         when(userRepository.findById(any(Integer.class)))
                 .thenReturn(Optional.of(user));
         User gottenUser = userService.getUser(1);
         assertNotNull(gottenUser);
-        assertEquals(gottenUser,user);
+        assertEquals(gottenUser, user);
         verify(userRepository, times(1)).findById(any(Integer.class));
     }
 
