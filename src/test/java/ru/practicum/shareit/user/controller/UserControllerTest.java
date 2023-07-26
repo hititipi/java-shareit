@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -19,6 +20,7 @@ import ru.practicum.shareit.user.UserController;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.validation.exception.ValidationException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -101,6 +103,17 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(user.getId()), Integer.class))
                 .andExpect(jsonPath("$.name", is(user.getName())))
                 .andExpect(jsonPath("$.email", is(user.getEmail())));
+    }
+
+    @Test
+    public void getUserByInvalidIdTest() throws Exception {
+        when(userService.getUser(any(Integer.class))).thenThrow(new ValidationException(HttpStatus.NOT_FOUND, "sss"));
+
+        mvc.perform(get("/users/2")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test

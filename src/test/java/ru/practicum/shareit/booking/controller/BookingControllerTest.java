@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -18,6 +19,7 @@ import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.validation.exception.UnsupportedStatusException;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.TestUtils.*;
 import static ru.practicum.shareit.item.ItemController.USER_ID_HEADER;
+import static ru.practicum.shareit.validation.ValidationErrors.UNSUPPORTED_STATUS;
 
 @ExtendWith(MockitoExtension.class)
     public class BookingControllerTest {
@@ -143,11 +146,25 @@ import static ru.practicum.shareit.item.ItemController.USER_ID_HEADER;
                 .andExpect(jsonPath("$[*].status", containsInAnyOrder(responseBookingDto.getStatus().toString())));
     }
 
+    /*@Test
+    void getAllBookingsUnsupportedTest() throws Exception {
+        Exception exception = new UnsupportedStatusException(HttpStatus.BAD_REQUEST, UNSUPPORTED_STATUS);
+        when(bookingService.getAllBookings(any(),any(Integer.class), any(Integer.class), any(Integer.class)))
+                .thenThrow(new UnsupportedStatusException(HttpStatus.BAD_REQUEST, UNSUPPORTED_STATUS));
+        BookingState state = BookingState.UNSUPPORTED_STATUS;
+        mvc.perform(get("/bookings?state={state}", state)
+                        .header("X-Sharer-User-Id", 1)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }*/
+
     @Test
     public void getAllBookingsTestWithPagination() throws Exception {
         when(bookingService.getAllBookings(any(),any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(booking));
         BookingState state = BookingState.ALL;
-        mvc.perform(get("/bookings?state={state}&from=0&size=10", state)
+        mvc.perform(get("/bookings?state={state}", state)
                         .content(mapper.writeValueAsString(booking))
                         .header("X-Sharer-User-Id", 1)
                         .characterEncoding(StandardCharsets.UTF_8)

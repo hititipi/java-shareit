@@ -43,17 +43,16 @@ public class BookingRepositoryTest {
 
     @BeforeEach
     public void beforeEach() {
-        start = LocalDateTime.now().plusDays(2);
+        start = LocalDateTime.now().plusDays(1);
         end = start.plusDays(7);
         bookingStatus = BookingStatus.APPROVED;
-
         itemOwner = userRepository.save(User.builder().name("owner").email("owner@mail.com").build());
         booker = userRepository.save(User.builder().name("booker").email("booker@mail.com").build());
         item = itemRepository.save(Item.builder().owner(itemOwner).name("item").description("description").available(true).build());
         booking = bookingRepository.save(Booking.builder()
                 .booker(booker)
                 .status(BookingStatus.APPROVED).item(item)
-                .start(LocalDateTime.now().plusDays(1)).end(LocalDateTime.now().plusDays(5)).build());
+                .start(start).end(end).build());
     }
 
 
@@ -140,7 +139,6 @@ public class BookingRepositoryTest {
     void findBookingByItemOwnerTest() {
         Page<Booking> result = bookingRepository
                 .findBookingByItemOwner(itemOwner, Pageable.unpaged());
-
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(booking, result.getContent().get(0));
@@ -150,7 +148,6 @@ public class BookingRepositoryTest {
     void findBookingByItemIdAndStartAfterBefore() {
         List<Booking> result = bookingRepository
                 .findBookingByItemIdAndStartBefore(item.getId(), LocalDateTime.now().plusDays(3), Sort.unsorted());
-
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(booking, result.get(0));
@@ -168,81 +165,31 @@ public class BookingRepositoryTest {
     @Test
     void findByBookerIdTest() {
         Page<Booking> result = bookingRepository.findByBookerId(booker.getId(), Pageable.unpaged());
-
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(booking, result.getContent().get(0));
     }
 
-    /*@Test
-    void findBookingByItemIdAnddBookerIdAndStatusAndStartBefore(){
-        Page<Booking> result = bookingRepository.findBookingByItemIdAndBookerIdAndStatusAndStartBefore(item.getId(),
-                booker.getId(), bookingStatus, LocalDateTime.now().plusDays(2), Pageable.unpaged());
-
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(booking, result.getContent().get(0));
-    }*/
-
-
-    //   findBookingByItemIdAndBookerIdAndStatusAndStartBefore
-
-
-    //   findBookingByItemInAndStatus
-
-
-
-
-
-
-
-    /*
-
-
-
-
-
-
-
-
-     */
-
-   /* @Test
-    public void findBookingByItemIdAndEndBeforeTest() {
-        List<Booking> result = bookingRepository.
-                .findBookingByItemIdAndEndBefore(item.getId(), LocalDateTime.now().plusDays(30), Sort.unsorted());
-
+    @Test
+    void findBookingByItemIdAndBookerIdAndStatusAndStartBeforeTest(){
+        List<Booking> result = bookingRepository.findBookingByItemIdAndBookerIdAndStatusAndStartBefore
+                (item.getId(), booker.getId(), bookingStatus, LocalDateTime.now().plusDays(3));
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(booking, result.get(0));
-    }*/
+    }
 
-    /*@Test
-    public void findBookingByItemIdAndStartAfterTest() {
-        List<Booking> result = bookingRepository
-                .findBookingByItemIdAndStartAfter(item.getId(), LocalDateTime.now(), Sort.unsorted());
-
+    @Test
+    void findBookingByItemInAndStatusTest(){
+        List<Booking> result = bookingRepository.findBookingByItemInAndStatus
+                (List.of(item), bookingStatus);
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(booking, result.get(0));
-    }*/
-
-    /**/
-
-    /* */
-
-   /* @Test
-    void findBookingsForAddCommentsTest() {
-        List<Booking> result = bookingRepository
-                .findBookingsForAddComments(item.getId(), booker.getId(), end.plusDays(1));
-
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(booking, result.get(0));
-    }*/
+    }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         userRepository.deleteAll();
         itemRepository.deleteAll();
         bookingRepository.deleteAll();
