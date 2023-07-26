@@ -34,15 +34,15 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where b.item.owner = :user " +
             "and b.start < :time " +
             "and b.end > :time")
-    Page<Booking> findBookingsByItemOwnerCurrent(@Param("user") User booker, @Param("time") LocalDateTime now, Pageable page);
+    Page<Booking> findBookingsByItemOwnerCurrent(@Param("user") User owner, @Param("time") LocalDateTime now, Pageable page);
 
-    Page<Booking> findBookingByItemOwnerAndEndIsBefore(User booker, LocalDateTime now, Pageable page);
+    Page<Booking> findBookingByItemOwnerAndEndIsBefore(User owner, LocalDateTime now, Pageable page);
 
-    Page<Booking> findBookingByItemOwnerAndStartIsAfter(User booker, LocalDateTime now, Pageable page);
+    Page<Booking> findBookingByItemOwnerAndStartIsAfter(User owner, LocalDateTime now, Pageable page);
 
-    Page<Booking> findBookingByItemOwnerAndStatus(User booker, BookingStatus status, Pageable page);
+    Page<Booking> findBookingByItemOwnerAndStatus(User owner, BookingStatus status, Pageable page);
 
-    Page<Booking> findBookingByItemOwner(User booker, Pageable page);
+    Page<Booking> findBookingByItemOwner(User owner, Pageable page);
 
     List<Booking> findBookingByItemIdAndStartBefore(int itemId, LocalDateTime now, Sort sort);
 

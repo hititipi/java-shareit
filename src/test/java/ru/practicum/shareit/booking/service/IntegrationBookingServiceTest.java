@@ -46,7 +46,7 @@ public class IntegrationBookingServiceTest {
         itemService.addItem(postItemDto, createdOwner.getId());*/
 
         PostBookingDto postBookingDto = PostBookingDto.builder()
-                .itemId(item.getId())
+                .itemId(createdItem.getId())
                 .start(LocalDateTime.now().plusDays(1))
                 .end(LocalDateTime.now().plusDays(2))
                 .build();

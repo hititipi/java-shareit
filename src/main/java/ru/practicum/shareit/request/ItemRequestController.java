@@ -49,9 +49,6 @@ public class ItemRequestController {
                                                @Positive int size,
                                                @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.getAllRequestForUser(userId));
-
-        System.out.println("FIND ALL " + from + "  " + size + "  "  + userId);
-
         return itemRequestService.findAll(from, size, userId);
     }
 

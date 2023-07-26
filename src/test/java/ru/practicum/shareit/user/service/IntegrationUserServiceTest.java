@@ -27,14 +27,14 @@ public class IntegrationUserServiceTest {
 
     @Test
     public void getUserByIdTest() {
-        User savedUser = userService.createUser(owner);
+        User savedUser = userService.createUser(User.builder().name("user").email("user@mail.com").build());
         User gottenUser = userService.getUser(savedUser.getId());
 
         // надо получить пользователя через EntityManger и сним сравнить
 
         assertThat(gottenUser.getId(), notNullValue());
-        assertThat(gottenUser.getName(), equalTo(owner.getName()));
-        assertThat(gottenUser.getEmail(), equalTo(owner.getEmail()));
+        assertThat(gottenUser.getName(), equalTo(savedUser.getName()));
+        assertThat(gottenUser.getEmail(), equalTo(savedUser.getEmail()));
         userService.deleteUser(gottenUser.getId());
     }
 

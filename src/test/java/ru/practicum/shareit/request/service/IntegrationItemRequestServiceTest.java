@@ -61,7 +61,8 @@ public class IntegrationItemRequestServiceTest {
         //assertThat(gottenItemRequest.getEnd(), equalTo(gottenItemRequestFromDB.getEnd()));
 
 
-
+        userService.deleteUser(createdOwner.getId());
+        userService.deleteUser(createdRequestor.getId());
 
 
     }
