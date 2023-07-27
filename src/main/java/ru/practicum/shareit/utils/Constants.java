@@ -1,5 +1,8 @@
 package ru.practicum.shareit.utils;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class Constants {
 
     public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";

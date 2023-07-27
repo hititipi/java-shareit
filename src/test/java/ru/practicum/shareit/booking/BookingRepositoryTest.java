@@ -69,7 +69,6 @@ public class BookingRepositoryTest {
     void findByBookerIdAndEndIsBeforeTest() {
         Page<Booking> result = bookingRepository
                 .findByBookerIdAndEndIsBefore(booker.getId(), LocalDateTime.now().plusDays(10), Pageable.unpaged());
-
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(booking, result.getContent().get(0));

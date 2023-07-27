@@ -69,7 +69,6 @@ public class UserControllerTest {
     @Test
     public void updateUserTest() throws Exception {
         when(userService.updateUser(any())).thenReturn(user);
-
         mvc.perform(patch("/users/1")
                         .content(mapper.writeValueAsString(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)
