@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface ItemRequestService {
 
-    ItemRequest createItemRequest(ItemRequest itemRequest, int requesterId);
+    ItemRequest createItemRequest(ItemRequest itemRequest, int requestorId);
 
-    List<ResponseItemRequestDto> getForOwner(int requesterId);
+    List<ResponseItemRequestDto> getForOwner(int requestorId);
 
-    List<ResponseItemRequestDto> findAll(int from, int size, int userId);
+    List<ResponseItemRequestDto> getAll(int from, int size, int userId);
 
-    ResponseItemRequestDto findById(int requestId, int userId);
+    ResponseItemRequestDto getById(int requestId, int userId);
 
 }

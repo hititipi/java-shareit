@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ru.practicum.shareit.TestUtils.ownerWithoutId;
+import static ru.practicum.shareit.TestUtils.requestorWithoutId;
 
 @DataJpaTest
 public class ItemRepositoryTest {
@@ -26,39 +28,30 @@ public class ItemRepositoryTest {
     private ItemRepository itemRepository;
     @Autowired
     private ItemRequestRepository requestRepository;
-
     private User itemOwner;
     private Item item;
     private ItemRequest request;
 
     @BeforeEach
-    public void beforeEach() {
-        itemOwner = userRepository.save(User.builder().name("owner").email("owner@mail.com").build());
-        User user = userRepository.save(User.builder().name("user").email("usesr@mail.com").build());
-        request = requestRepository.save(ItemRequest
-                .builder()
-                .requester(user).created(LocalDateTime.now())
+    void beforeEach() {
+        itemOwner = userRepository.save(ownerWithoutId);
+        User user = userRepository.save(requestorWithoutId);
+        request = requestRepository.save(ItemRequest.builder().requestor(user).created(LocalDateTime.now())
                 .description("description").build());
-        item = itemRepository.save(Item.builder()
-                .name("item")
-                .description("description")
+        item = itemRepository.save(Item.builder().name("item").description("description")
                 .available(true).itemRequest(request).owner(itemOwner).build());
-
-
     }
 
     @Test
-    public void searchTest() {
+    void searchTest() {
         List<Item> result = itemRepository.search("description", Pageable.unpaged());
-
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(item, result.get(0));
     }
 
-
     @Test
-    public void findAllTest() {
+    void findAllTest() {
         List<Item> result = itemRepository.findAllByRequestIdIn(List.of(request));
         assertNotNull(result);
         assertFalse(result.isEmpty());
@@ -68,7 +61,7 @@ public class ItemRepositoryTest {
     }
 
     @Test
-    public void findAllByItemRequestTest() {
+    void findAllByItemRequestTest() {
         List<Item> result = itemRepository.findAllByItemRequest(request);
         assertNotNull(result);
         assertFalse(result.isEmpty());
@@ -78,7 +71,7 @@ public class ItemRepositoryTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         userRepository.deleteAll();
         itemRepository.deleteAll();
         requestRepository.deleteAll();

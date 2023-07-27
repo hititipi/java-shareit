@@ -15,12 +15,6 @@ public class UserServiceTest {
     private final UserRepository userRepository = mock(UserRepository.class);
     private final UserService userService = new UserServiceImpl(userRepository);
 
-    /*@BeforeEach
-    void beforeEach() {
-        userRepository = mock(UserRepository.class);
-        userService = new UserServiceImpl(userRepository);
-    }*/
-
     @Test
     void getUserTest() {
         User user = new User(1, "user1", "user1@mail.com");

@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.practicum.shareit.TestUtils.bookerWithoutId;
+import static ru.practicum.shareit.TestUtils.ownerWithoutId;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -30,29 +32,18 @@ public class IntegrationBookingServiceTest {
     private final ItemService itemService;
     private final UserService userService;
 
-
     @Test
     void addBookingTest() {
-        User createdOwner = userService.createUser(User.builder().name("user").email("user@mail.com").build());
-        User createdBooker = userService.createUser(User.builder().name("user2").email("user2@mail.com").build());
-        Item createdItem = itemService.addItem(PostItemDto.builder().name("item1").description("description1").available(true).build(), createdOwner.getId());
-
-        /*User createdOwner = userService.createUser(owner);
-        User createdBooker = userService.createUser(booker);
-        itemService.addItem(postItemDto, createdOwner.getId());*/
-
-        PostBookingDto postBookingDto = PostBookingDto.builder()
-                .itemId(createdItem.getId())
-                .start(LocalDateTime.now().plusDays(1))
-                .end(LocalDateTime.now().plusDays(2))
-                .build();
+        User createdOwner = userService.createUser(ownerWithoutId);
+        User createdBooker = userService.createUser(bookerWithoutId);
+        Item createdItem = itemService.addItem(PostItemDto.builder().name("item1").description("description1")
+                .available(true).build(), createdOwner.getId());
+        PostBookingDto postBookingDto = PostBookingDto.builder().itemId(createdItem.getId()).start(LocalDateTime.now()
+                        .plusDays(1)).end(LocalDateTime.now().plusDays(2)).build();
         Booking booking = bookingService.addBooking(postBookingDto, createdBooker.getId());
 
         TypedQuery<Booking> query = em.createQuery("Select b from bookings b where b.id = :bookingId", Booking.class);
-        Booking gottenBooking = query
-                .setParameter("bookingId", booking.getId())
-                .getSingleResult();
-
+        Booking gottenBooking = query.setParameter("bookingId", booking.getId()).getSingleResult();
 
         assertThat(gottenBooking.getId(), equalTo(booking.getId()));
         assertThat(gottenBooking.getBooker(), equalTo(booking.getBooker()));
@@ -60,11 +51,8 @@ public class IntegrationBookingServiceTest {
         assertThat(gottenBooking.getStart(), equalTo(booking.getStart()));
         assertThat(gottenBooking.getEnd(), equalTo(booking.getEnd()));
 
-
         userService.deleteUser(createdOwner.getId());
         userService.deleteUser(createdBooker.getId());
-
     }
-
 
 }

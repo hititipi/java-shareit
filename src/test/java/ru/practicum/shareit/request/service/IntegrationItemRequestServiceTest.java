@@ -20,6 +20,7 @@ import javax.persistence.TypedQuery;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.practicum.shareit.TestUtils.*;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -33,35 +34,25 @@ public class IntegrationItemRequestServiceTest {
 
     @Test
     void getForOwner() {
-        User createdOwner = userService.createUser(User.builder().name("user").email("user@mail.com").build());
-        User createdRequestor = userService.createUser(User.builder().name("user2").email("user2@mail.com").build());
-        Item createdItem = itemService.addItem(PostItemDto.builder().name("item1").description("description1").available(true).build(), createdOwner.getId());
-
+        User createdOwner = userService.createUser(ownerWithoutId);
+        User createdRequestor = userService.createUser(requestorWithoutId);
+        itemService.addItem(PostItemDto.builder().name("item1").description("description1").available(true).build(), createdOwner.getId());
         PostItemRequestDto postItemRequestDto = PostItemRequestDto.builder().description("request_descritpion").build();
         ItemRequest request = ItemRequestMapper.toItemRequest(postItemRequestDto);
         request = itemRequestService.createItemRequest(request, createdRequestor.getId());
 
-        ResponseItemRequestDto gottenItemRequest = itemRequestService.findById(request.getId(), createdRequestor.getId());
-
-        //TypedQuery<Booking> query = em.createQuery("Select b from bookings b where b.id = :bookingId", Booking.class);
-
+        ResponseItemRequestDto gottenItemRequest = itemRequestService.getById(request.getId(), createdRequestor.getId());
         TypedQuery<ItemRequest> query = em.createQuery("Select i from requests i where i.id = :requestId", ItemRequest.class);
         ItemRequest gottenItemRequestFromDB = query
                 .setParameter("requestId", request.getId())
                 .getSingleResult();
 
         assertThat(gottenItemRequest.getId(), equalTo(gottenItemRequestFromDB.getId()));
-        assertThat(createdRequestor, equalTo(gottenItemRequestFromDB.getRequester()));
+        assertThat(createdRequestor, equalTo(gottenItemRequestFromDB.getRequestor()));
         assertThat(gottenItemRequest.getCreated(), equalTo(gottenItemRequestFromDB.getCreated()));
-        //assertThat(gottenItemRequest.getStart(), equalTo(gottenItemRequestFromDB.getStart()));
-        //assertThat(gottenItemRequest.getEnd(), equalTo(gottenItemRequestFromDB.getEnd()));
-
 
         userService.deleteUser(createdOwner.getId());
         userService.deleteUser(createdRequestor.getId());
-
-
     }
-
 
 }

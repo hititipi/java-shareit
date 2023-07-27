@@ -33,16 +33,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
 
     @Override
-    public ItemRequest createItemRequest(ItemRequest itemRequest, int requesterId) {
-        User user = findUser(requesterId);
-        itemRequest.setRequester(user);
+    public ItemRequest createItemRequest(ItemRequest itemRequest, int requestorId) {
+        User user = findUser(requestorId);
+        itemRequest.setRequestor(user);
         return itemRequestRepository.save(itemRequest);
     }
 
     @Override
-    public List<ResponseItemRequestDto> getForOwner(int requesterId) {
-        User user = findUser(requesterId);
-        List<ItemRequest> requests = itemRequestRepository.findRequestByRequesterIdOrderByCreatedDesc(requesterId);
+    public List<ResponseItemRequestDto> getForOwner(int requestorId) {
+        User user = findUser(requestorId);
+        List<ItemRequest> requests = itemRequestRepository.findRequestByRequestorIdOrderByCreatedDesc(requestorId);
         Map<ItemRequest, List<Item>> itemsByRequest = findItemsByRequests(requests);
         return requests.stream()
                 .map(request -> ItemRequestMapper.toResponseItemRequestDto(request, itemsByRequest.get(request)))
@@ -50,7 +50,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ResponseItemRequestDto> findAll(int from, int size, int userId) {
+    public List<ResponseItemRequestDto> getAll(int from, int size, int userId) {
         findUser(userId);
         Pageable pageable = PageRequest.of(from / size, size, SORT_BY_CREATED_DESC);
         List<ItemRequest> requests = itemRequestRepository.findAllForUser(userId, pageable).toList();
@@ -61,7 +61,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ResponseItemRequestDto findById(int requestId, int userId) {
+    public ResponseItemRequestDto getById(int requestId, int userId) {
         findUser(userId);
         ItemRequest request = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new ValidationException(HttpStatus.NOT_FOUND, RESOURCE_NOT_FOUND));

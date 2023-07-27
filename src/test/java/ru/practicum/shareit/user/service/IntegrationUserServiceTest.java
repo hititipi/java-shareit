@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.exception.ValidationException;
-
-import javax.persistence.EntityManager;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -23,16 +20,12 @@ import ru.practicum.shareit.validation.ValidationErrors;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class IntegrationUserServiceTest {
 
-    private final EntityManager em;
     private final UserService userService;
 
     @Test
     public void getUserByIdTest() {
         User savedUser = userService.createUser(User.builder().name("user").email("user@mail.com").build());
         User gottenUser = userService.getUser(savedUser.getId());
-
-        // надо получить пользователя через EntityManger и сним сравнить
-
         assertThat(gottenUser.getId(), notNullValue());
         assertThat(gottenUser.getName(), equalTo(savedUser.getName()));
         assertThat(gottenUser.getEmail(), equalTo(savedUser.getEmail()));
@@ -41,18 +34,10 @@ public class IntegrationUserServiceTest {
 
     @Test
     public void getUserByInvalidIdTest() {
-        User savedUser = userService.createUser(User.builder().name("user").email("user@mail.com").build());
-
+        userService.createUser(User.builder().name("user").email("user@mail.com").build());
         ValidationException exception = assertThrows(ValidationException.class, () -> userService.getUser(100));
         assertThat(exception.getStatus(), equalTo(HttpStatus.NOT_FOUND));
         assertThat(exception.getMessage(), equalTo(ValidationErrors.RESOURCE_NOT_FOUND));
-
-        // надо получить пользователя через EntityManger и сним сравнить
-
-       /* assertThat(gottenUser.getId(), notNullValue());
-        assertThat(gottenUser.getName(), equalTo(savedUser.getName()));
-        assertThat(gottenUser.getEmail(), equalTo(savedUser.getEmail()));
-        userService.deleteUser(gottenUser.getId());*/
     }
 
 }

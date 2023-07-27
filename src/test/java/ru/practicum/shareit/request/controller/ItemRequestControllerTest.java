@@ -38,8 +38,7 @@ public class ItemRequestControllerTest {
     private ItemRequestController itemRequestController;
     private final ObjectMapper mapper = new ObjectMapper();
     private MockMvc mvc;
-    //private RequestDto requestDto;
-    //private ItemRequest request;
+
     private ResponseItemRequestDto responseItemRequestDto;
 
     @BeforeEach
@@ -56,7 +55,6 @@ public class ItemRequestControllerTest {
     @Test
     void createItemRequestTest() throws Exception {
         when(itemRequestService.createItemRequest(any(), any(Integer.class))).thenReturn(request);
-
         mvc.perform(post("/requests")
                         .content(mapper.writeValueAsString(request))
                         .header("X-Sharer-User-Id", 1)
@@ -72,7 +70,6 @@ public class ItemRequestControllerTest {
     @Test
     void getItemRequestForUserTest() throws Exception {
         when(itemRequestService.getForOwner(any(Integer.class))).thenReturn(List.of(responseItemRequestDto));
-
         mvc.perform(get("/requests")
                         .header("X-Sharer-User-Id", 1)
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -86,8 +83,7 @@ public class ItemRequestControllerTest {
 
     @Test
     void getAllTest() throws Exception {
-        when(itemRequestService.findAll(any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(responseItemRequestDto));
-
+        when(itemRequestService.getAll(any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(responseItemRequestDto));
         mvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", 1)
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -101,8 +97,7 @@ public class ItemRequestControllerTest {
 
     @Test
     void getAllWithPaginationTest() throws Exception {
-        when(itemRequestService.findAll(any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(responseItemRequestDto));
-
+        when(itemRequestService.getAll(any(Integer.class), any(Integer.class), any(Integer.class))).thenReturn(List.of(responseItemRequestDto));
         mvc.perform(get("/requests/all?from=0&size=10")
                         .header("X-Sharer-User-Id", 1)
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -116,8 +111,7 @@ public class ItemRequestControllerTest {
 
     @Test
     void getByIdTest() throws Exception {
-        when(itemRequestService.findById(any(Integer.class), any(Integer.class))).thenReturn(responseItemRequestDto);
-
+        when(itemRequestService.getById(any(Integer.class), any(Integer.class))).thenReturn(responseItemRequestDto);
         mvc.perform(get("/requests/1")
                         .header("X-Sharer-User-Id", 1)
                         .characterEncoding(StandardCharsets.UTF_8)

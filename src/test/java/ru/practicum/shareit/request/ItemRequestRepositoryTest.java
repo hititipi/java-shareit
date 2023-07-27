@@ -20,10 +20,8 @@ public class ItemRequestRepositoryTest {
 
     @Autowired
     private ItemRequestRepository itemRequestRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     private User user;
     private User requestor;
     private ItemRequest request;
@@ -33,19 +31,18 @@ public class ItemRequestRepositoryTest {
         LocalDateTime dateTime = LocalDateTime.now();
         user = userRepository.save(User.builder().name("user").email("user@mail.com").build());
         requestor = userRepository.save(User.builder().name("requestor").email("requestor@mail.com").build());
-        request = itemRequestRepository.save(ItemRequest.builder().requester(requestor).description("description")
+        request = itemRequestRepository.save(ItemRequest.builder().requestor(requestor).description("description")
                 .created(dateTime).build());
     }
 
     @Test
-    public void findRequestByRequesterIdOrderByCreatedDescTest() {
+    public void findRequestByRequestorIdOrderByCreatedDescTest() {
         List<ItemRequest> result = itemRequestRepository
-                .findRequestByRequesterIdOrderByCreatedDesc(requestor.getId());
-
+                .findRequestByRequestorIdOrderByCreatedDesc(requestor.getId());
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(request.getDescription(), result.get(0).getDescription());
-        assertEquals(request.getRequester(), result.get(0).getRequester());
+        assertEquals(request.getRequestor(), result.get(0).getRequestor());
         assertEquals(request.getCreated(), result.get(0).getCreated());
     }
 
@@ -56,7 +53,7 @@ public class ItemRequestRepositoryTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(request.getDescription(), result.getContent().get(0).getDescription());
-        assertEquals(request.getRequester(), result.getContent().get(0).getRequester());
+        assertEquals(request.getRequestor(), result.getContent().get(0).getRequestor());
         assertEquals(request.getCreated(), result.getContent().get(0).getCreated());
     }
 

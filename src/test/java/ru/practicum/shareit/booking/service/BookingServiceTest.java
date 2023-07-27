@@ -11,10 +11,8 @@ import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.exception.UnsupportedStatusException;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
@@ -26,6 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static ru.practicum.shareit.TestUtils.*;
 import static ru.practicum.shareit.utils.Sorts.SORT_BY_START_DESC;
 import static ru.practicum.shareit.validation.ValidationErrors.*;
 
@@ -34,30 +33,24 @@ public class BookingServiceTest {
     private final BookingRepository bookingRepository = mock((BookingRepository.class));
     private final ItemRepository itemRepository = mock(ItemRepository.class);
     private final UserRepository userRepository = mock(UserRepository.class);
-
     private final BookingService bookingService = new BookingServiceImpl(bookingRepository, itemRepository, userRepository);
-
 
     @Test
     void addBookingTest() {
-        // owner = userID
-        User owner = new User(1, "user1", "user1@mail.com");
-        User booker = new User(2, "user2", "user2@mail.com");
-        Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
-        when(itemRepository.findById(1)).thenReturn(Optional.of(item1));
-        PostBookingDto bookingDto = PostBookingDto.builder().itemId(item1.getId()).build();
+        when(itemRepository.findById(1)).thenReturn(Optional.of(item));
+        PostBookingDto bookingDto = PostBookingDto.builder().itemId(item.getId()).build();
         ValidationException exception = assertThrows(ValidationException.class, () -> bookingService.addBooking(bookingDto, owner.getId()));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals(INVALID_USER_ID, exception.getMessage());
 
         // not available
-        item1.setAvailable(false);
+        item.setAvailable(false);
         exception = assertThrows(ValidationException.class, () -> bookingService.addBooking(bookingDto, booker.getId()));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
         assertEquals(ITEM_UNAVAILABLE, exception.getMessage());
 
         // invalid start
-        item1.setAvailable(true);
+        item.setAvailable(true);
         bookingDto.setStart(LocalDateTime.now());
         bookingDto.setEnd(LocalDateTime.now().minusDays(1));
         exception = assertThrows(ValidationException.class, () -> bookingService.addBooking(bookingDto, booker.getId()));
@@ -67,7 +60,7 @@ public class BookingServiceTest {
         // normal
         bookingDto.setEnd(LocalDateTime.now().plusDays(1));
         when(userRepository.findById(2)).thenReturn(Optional.of(booker));
-        Booking booking = Booking.builder().id(1).booker(booker).start(bookingDto.getStart()).end(bookingDto.getEnd()).item(item1).build();
+        Booking booking = Booking.builder().id(1).booker(booker).start(bookingDto.getStart()).end(bookingDto.getEnd()).item(item).build();
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
         Booking result = bookingService.addBooking(bookingDto, booker.getId());
         assertNotNull(result);
@@ -78,10 +71,7 @@ public class BookingServiceTest {
 
     @Test
     void approveTest() {
-        User owner = new User(1, "user1", "user1@mail.com");
-        User booker = new User(2, "user2", "user2@mail.com");
-        Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
-        Booking booking = Booking.builder().id(1).item(item1).booker(booker).build();
+        Booking booking = Booking.builder().id(1).item(item).booker(booker).build();
         when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
 
         // invalid user Id
@@ -110,10 +100,7 @@ public class BookingServiceTest {
 
     @Test
     void getBookingForUser() {
-        User owner = new User(1, "user1", "user1@mail.com");
-        User booker = new User(2, "user2", "user2@mail.com");
-        Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
-        Booking booking = Booking.builder().id(1).item(item1).booker(booker).build();
+        Booking booking = Booking.builder().id(1).item(item).booker(booker).build();
         when(bookingRepository.findById(1)).thenReturn(Optional.of(booking));
 
         // invalid userId
@@ -130,10 +117,7 @@ public class BookingServiceTest {
 
     @Test
     void findAllBookingsTest() {
-        User owner = new User(1, "user1", "user1@mail.com");
-        User booker = new User(2, "user2", "user2@mail.com");
-        Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
-        Booking booking = Booking.builder().id(1).item(item1).booker(booker).build();
+        Booking booking = Booking.builder().id(1).item(item).booker(booker).build();
         when(userRepository.findById(2)).thenReturn(Optional.of(booker));
         Pageable page = PageRequest.of(0, 20, SORT_BY_START_DESC);
         Page<Booking> pageResult = new PageImpl<>(List.of(booking));
@@ -189,15 +173,10 @@ public class BookingServiceTest {
 
     @Test
     void findAllBookingsForOwnerTest() {
-        User owner = new User(1, "user1", "user1@mail.com");
-        User booker = new User(2, "user2", "user2@mail.com");
-        Item item1 = Item.builder().id(1).name("item_name1").description("item_description1").owner(owner).build();
-        Booking booking = Booking.builder().id(1).item(item1).booker(booker).build();
-
+        Booking booking = Booking.builder().id(1).item(item).booker(booker).build();
         when(userRepository.findById(1)).thenReturn(Optional.of(owner));
         Pageable page = PageRequest.of(0, 20, SORT_BY_START_DESC);
         Page<Booking> pageResult = new PageImpl<>(List.of(booking));
-        LocalDateTime now = LocalDateTime.now();
 
         // CURRENT
         when(bookingRepository.findBookingsByItemOwnerCurrent(eq(owner), any(LocalDateTime.class), eq(page))).thenReturn(pageResult);

@@ -20,16 +20,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static ru.practicum.shareit.TestUtils.bookerWithoutId;
+import static ru.practicum.shareit.TestUtils.ownerWithoutId;
 
 @DataJpaTest
 public class BookingRepositoryTest {
 
     @Autowired
     private BookingRepository bookingRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private ItemRepository itemRepository;
 
@@ -46,13 +46,11 @@ public class BookingRepositoryTest {
         start = LocalDateTime.now().plusDays(1);
         end = start.plusDays(7);
         bookingStatus = BookingStatus.APPROVED;
-        itemOwner = userRepository.save(User.builder().name("owner").email("owner@mail.com").build());
-        booker = userRepository.save(User.builder().name("booker").email("booker@mail.com").build());
+        itemOwner = userRepository.save(ownerWithoutId);
+        booker = userRepository.save(bookerWithoutId);
         item = itemRepository.save(Item.builder().owner(itemOwner).name("item").description("description").available(true).build());
-        booking = bookingRepository.save(Booking.builder()
-                .booker(booker)
-                .status(BookingStatus.APPROVED).item(item)
-                .start(start).end(end).build());
+        booking = bookingRepository.save(Booking.builder().booker(booker).status(BookingStatus.APPROVED)
+                .item(item).start(start).end(end).build());
     }
 
 

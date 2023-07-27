@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.user.UserController;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -52,10 +51,8 @@ public class UserControllerTest {
 
     @Test
     public void createUserTest() throws Exception {
-
         when(userService.createUser(any())).thenReturn(user);
-
-        ResultActions resultActions = mvc.perform(post("/users")
+        mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(userDto))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +94,6 @@ public class UserControllerTest {
     @Test
     public void getUserByInvalidIdTest() throws Exception {
         when(userService.getUser(any(Integer.class))).thenThrow(new ValidationException(HttpStatus.NOT_FOUND, "sss"));
-
         mvc.perform(get("/users/2")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -108,7 +104,6 @@ public class UserControllerTest {
     @Test
     public void getAllUsersTest() throws Exception {
         when(userService.getAllUsers()).thenReturn(List.of(user));
-
         mvc.perform(get("/users")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)

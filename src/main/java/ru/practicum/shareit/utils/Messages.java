@@ -72,12 +72,12 @@ public class Messages {
         return String.format("Запрос на добавление комментария: booking_id = %d, user_id = %d", itemId, userId);
     }
 
-    public static String addItemRequest(int requesterId) {
-        return String.format("Запрос на добавление запроса: requester_id = %d", requesterId);
+    public static String addItemRequest(int requestorId) {
+        return String.format("Запрос на добавление запроса: requestor_id = %d", requestorId);
     }
 
-    public static String getItemRequestsForOwner(int requesterId) {
-        return String.format("Запрос на получение запросов пользователя: requester_id = %d", requesterId);
+    public static String getItemRequestsForOwner(int requestorId) {
+        return String.format("Запрос на получение запросов пользователя: requestor_id = %d", requestorId);
     }
 
     public static String getAllRequestForUser(int userId) {
