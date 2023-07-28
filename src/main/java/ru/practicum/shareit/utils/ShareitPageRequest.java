@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 
 public class ShareitPageRequest extends PageRequest {
 
-    public ShareitPageRequest(){
+    public ShareitPageRequest() {
         this(Sort.unsorted());
     }
 

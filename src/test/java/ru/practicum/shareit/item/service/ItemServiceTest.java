@@ -44,7 +44,7 @@ public class ItemServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private BookingRepository bookingRepository ;
+    private BookingRepository bookingRepository;
     @Mock
     private CommentRepository commentRepository;
     @Mock
