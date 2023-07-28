@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utils.ShareitPageRequest;
 import ru.practicum.shareit.validation.ValidationErrors;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
@@ -87,16 +87,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public ResponseItemDto getItemForUser(int itemId, int userId) {
-        System.out.println("get item for user");
         Item item = getItem(itemId);
         List<Comment> comments = commentRepository.findByItemId(itemId);
         LocalDateTime now = LocalDateTime.now();
         Booking lastBooking = null;
         Booking nextBooking = null;
-        System.out.println("owner " + item.getOwner());
         if (item.getOwner().getId() == userId) {
             lastBooking = bookingRepository.findBookingByItemIdAndStartBefore(item.getId(), now, SORT_BY_START_DESC).stream().findFirst().orElse(null);
-            System.out.println("last booking " + lastBooking);
             nextBooking = bookingRepository.findBookingByItemIdAndStartAfterAndStatus(item.getId(), now, BookingStatus.APPROVED, SORT_BY_START).stream().findFirst().orElse(null);
         }
         return ItemMapper.toResponseItemDto(item, lastBooking, nextBooking, comments);
@@ -106,15 +103,13 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public List<ResponseItemDto> getAll(int userId, int from, int size) {
         User owner = findUser(userId);
-        Pageable page = PageRequest.of(from / size, size);
+        Pageable page = new ShareitPageRequest(from, size);
         Collection<Item> items = itemRepository.findAllByOwnerOrderById(owner, page).toList();
         return toResponseItemDto(items);
     }
 
     private List<ResponseItemDto> toResponseItemDto(Collection<Item> items) {
-        System.out.println("TO RESPOONCE ITEM DTO");
         Map<Item, List<Booking>> bookingsByItem = findApprovedBookingsByItem(items);
-        System.out.println(bookingsByItem);
 
         Map<Item, List<Comment>> comments = findComments(items);
         LocalDateTime now = LocalDateTime.now();
@@ -155,7 +150,7 @@ public class ItemServiceImpl implements ItemService {
         if (text == null || text.isBlank()) {
             return Collections.EMPTY_LIST;
         }
-        Pageable page = PageRequest.of(from / size, size);
+        Pageable page = new ShareitPageRequest(from, size);
         List<Item> items = itemRepository.search(text, page);
         return toResponseItemDto(items);
     }

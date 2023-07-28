@@ -1,6 +1,10 @@
 package ru.practicum.shareit.item.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -32,14 +36,21 @@ import static ru.practicum.shareit.TestUtils.*;
 import static ru.practicum.shareit.utils.Sorts.SORT_BY_START;
 import static ru.practicum.shareit.utils.Sorts.SORT_BY_START_DESC;
 
+@ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
 
-    private final ItemRepository itemRepository = mock(ItemRepository.class);
-    private final UserRepository userRepository = mock(UserRepository.class);
-    private final BookingRepository bookingRepository = mock(BookingRepository.class);
-    private final CommentRepository commentRepository = mock(CommentRepository.class);
-    private final ItemRequestRepository itemRequestRepository = mock(ItemRequestRepository.class);
-    private final ItemService itemService = new ItemServiceImpl(itemRepository, bookingRepository, commentRepository, userRepository, itemRequestRepository);
+    @Mock
+    private ItemRepository itemRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private BookingRepository bookingRepository ;
+    @Mock
+    private CommentRepository commentRepository;
+    @Mock
+    private ItemRequestRepository itemRequestRepository;
+    @InjectMocks
+    private ItemServiceImpl itemService;
 
     @Test
     void addItemTest() {

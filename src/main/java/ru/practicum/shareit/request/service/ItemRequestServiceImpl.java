@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utils.ShareitPageRequest;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ResponseItemRequestDto> getForOwner(int requestorId) {
-        User user = findUser(requestorId);
+        findUser(requestorId);
         List<ItemRequest> requests = itemRequestRepository.findRequestByRequestorIdOrderByCreatedDesc(requestorId);
         Map<ItemRequest, List<Item>> itemsByRequest = findItemsByRequests(requests);
         return requests.stream()
@@ -52,8 +52,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ResponseItemRequestDto> getAll(int from, int size, int userId) {
         findUser(userId);
-        Pageable pageable = PageRequest.of(from / size, size, SORT_BY_CREATED_DESC);
-        List<ItemRequest> requests = itemRequestRepository.findAllForUser(userId, pageable).toList();
+        Pageable page = new ShareitPageRequest(from, size, SORT_BY_CREATED_DESC);
+        List<ItemRequest> requests = itemRequestRepository.findAllForUser(userId, page).toList();
         Map<ItemRequest, List<Item>> itemsByRequest = findItemsByRequests(requests);
         return itemsByRequest.entrySet().stream()
                 .map(entry -> ItemRequestMapper.toResponseItemRequestDto(entry.getKey(), entry.getValue()))

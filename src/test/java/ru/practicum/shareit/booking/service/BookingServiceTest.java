@@ -1,9 +1,12 @@
 package ru.practicum.shareit.booking.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -13,6 +16,7 @@ import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.utils.ShareitPageRequest;
 import ru.practicum.shareit.validation.exception.UnsupportedStatusException;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
@@ -28,12 +32,17 @@ import static ru.practicum.shareit.TestUtils.*;
 import static ru.practicum.shareit.utils.Sorts.SORT_BY_START_DESC;
 import static ru.practicum.shareit.validation.ValidationErrors.*;
 
+@ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
 
-    private final BookingRepository bookingRepository = mock((BookingRepository.class));
-    private final ItemRepository itemRepository = mock(ItemRepository.class);
-    private final UserRepository userRepository = mock(UserRepository.class);
-    private final BookingService bookingService = new BookingServiceImpl(bookingRepository, itemRepository, userRepository);
+    @Mock
+    private BookingRepository bookingRepository;
+    @Mock
+    private ItemRepository itemRepository;
+    @Mock
+    private UserRepository userRepository;
+    @InjectMocks
+    private BookingServiceImpl bookingService;
 
     @Test
     void addBookingTest() {
@@ -119,7 +128,7 @@ public class BookingServiceTest {
     void findAllBookingsTest() {
         Booking booking = Booking.builder().id(1).item(item).booker(booker).build();
         when(userRepository.findById(2)).thenReturn(Optional.of(booker));
-        Pageable page = PageRequest.of(0, 20, SORT_BY_START_DESC);
+        Pageable page = new ShareitPageRequest(SORT_BY_START_DESC);
         Page<Booking> pageResult = new PageImpl<>(List.of(booking));
 
         // CURRENT
@@ -175,9 +184,8 @@ public class BookingServiceTest {
     void findAllBookingsForOwnerTest() {
         Booking booking = Booking.builder().id(1).item(item).booker(booker).build();
         when(userRepository.findById(1)).thenReturn(Optional.of(owner));
-        Pageable page = PageRequest.of(0, 20, SORT_BY_START_DESC);
+        Pageable page = new ShareitPageRequest(SORT_BY_START_DESC);
         Page<Booking> pageResult = new PageImpl<>(List.of(booking));
-
         // CURRENT
         when(bookingRepository.findBookingsByItemOwnerCurrent(eq(owner), any(LocalDateTime.class), eq(page))).thenReturn(pageResult);
         Collection<Booking> result = bookingService.getAllBookingForOwner(BookingState.CURRENT, owner.getId(), 0, 20);

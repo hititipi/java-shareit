@@ -1,6 +1,10 @@
 package ru.practicum.shareit.user.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -11,9 +15,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
-    private final UserRepository userRepository = mock(UserRepository.class);
-    private final UserService userService = new UserServiceImpl(userRepository);
+    @Mock
+    private UserRepository userRepository;
+    @InjectMocks
+    private UserServiceImpl userService;
 
     @Test
     void getUserTest() {

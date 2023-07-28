@@ -29,12 +29,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.TestUtils.*;
-import static ru.practicum.shareit.item.ItemController.USER_ID_HEADER;
+import static ru.practicum.shareit.utils.Constants.USER_ID_HEADER;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingControllerTest {
     @Mock
-    BookingService bookingService;
+    private BookingService bookingService;
     @InjectMocks
     BookingController bookingController;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -59,7 +59,7 @@ public class BookingControllerTest {
         when(bookingService.addBooking(any(), any(Integer.class))).thenReturn(booking);
         mvc.perform(post("/bookings")
                         .content(mapper.writeValueAsString(postBookingDto))
-                        .header("X-Sharer-User-Id", booker.getId())
+                        .header(USER_ID_HEADER, booker.getId())
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -104,7 +104,7 @@ public class BookingControllerTest {
         BookingState state = BookingState.ALL;
         mvc.perform(get("/bookings?state={state}", state)
                         .content(mapper.writeValueAsString(booking))
-                        .header("X-Sharer-User-Id", 1)
+                        .header(USER_ID_HEADER, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -121,7 +121,7 @@ public class BookingControllerTest {
         BookingState state = BookingState.ALL;
         mvc.perform(get("/bookings?state={state}", state)
                         .content(mapper.writeValueAsString(booking))
-                        .header("X-Sharer-User-Id", 1)
+                        .header(USER_ID_HEADER, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -138,7 +138,7 @@ public class BookingControllerTest {
         BookingState state = BookingState.ALL;
         mvc.perform(get("/bookings/owner?state={state}", state)
                         .content(mapper.writeValueAsString(booking))
-                        .header("X-Sharer-User-Id", 1)
+                        .header(USER_ID_HEADER, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -155,7 +155,7 @@ public class BookingControllerTest {
         BookingState state = BookingState.ALL;
         mvc.perform(get("/bookings/owner?state={state}&from=0&size=10", state)
                         .content(mapper.writeValueAsString(booking))
-                        .header("X-Sharer-User-Id", 1)
+                        .header(USER_ID_HEADER, 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

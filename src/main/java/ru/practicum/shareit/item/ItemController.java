@@ -15,21 +15,18 @@ import ru.practicum.shareit.validation.marker.Create;
 import ru.practicum.shareit.validation.marker.Update;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
-import static ru.practicum.shareit.utils.Constants.DEFAULT_FROM_VALUE;
-import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
-
+import static ru.practicum.shareit.utils.Constants.*;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-
-    public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     private final ItemService itemService;
 
@@ -53,7 +50,7 @@ public class ItemController {
     @GetMapping
     public Collection<ResponseItemDto> getAll(@RequestHeader(USER_ID_HEADER) int userId,
                                               @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                              @Min(0) int from,
+                                              @PositiveOrZero int from,
                                               @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                               @Positive int size) {
         log.info(Messages.getAllItems(userId));
@@ -69,7 +66,7 @@ public class ItemController {
     @GetMapping("/search")
     public Collection<ResponseItemDto> findItemsByText(@RequestParam String text,
                                                        @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                                       @Min(0) int from,
+                                                       @PositiveOrZero int from,
                                                        @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                                        @Positive int size) {
         log.info(Messages.findItems(text));

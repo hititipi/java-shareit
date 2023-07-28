@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class ItemRequest {
     @JoinColumn(name = "requestor_id")
     private User requestor;
     @Column(name = "created", nullable = false)
-    private LocalDateTime created = LocalDateTime.now();
+    @CreationTimestamp
+    private LocalDateTime created;
 
 }

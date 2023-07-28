@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utils.ShareitPageRequest;
 import ru.practicum.shareit.validation.ValidationErrors;
 import ru.practicum.shareit.validation.exception.UnsupportedStatusException;
 import ru.practicum.shareit.validation.exception.ValidationException;
@@ -87,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
     public List<Booking> getAllBookings(BookingState state, int userId, int from, int size) {
         findUser(userId); // check
         LocalDateTime now = LocalDateTime.now();
-        Pageable page = PageRequest.of(from / size, size, SORT_BY_START_DESC);
+        Pageable page = new ShareitPageRequest(from, size, SORT_BY_START_DESC);
         switch (state) {
             case CURRENT:
                 return bookingRepository.findByBookerIdCurrent(userId, now, page).toList();
@@ -112,7 +112,7 @@ public class BookingServiceImpl implements BookingService {
     public Collection<Booking> getAllBookingForOwner(BookingState state, int ownerId, int from, int size) {
         User owner = findUser(ownerId);
         LocalDateTime now = LocalDateTime.now();
-        Pageable page = PageRequest.of(from / size, size, SORT_BY_START_DESC);
+        Pageable page = new ShareitPageRequest(from, size, SORT_BY_START_DESC);
         switch (state) {
             case CURRENT:
                 return bookingRepository.findBookingsByItemOwnerCurrent(owner, now, page).toList();

@@ -9,9 +9,9 @@ import lombok.*;
 @ToString
 public class ItemRequestDto {
 
-    int id;
-    String name;
-    String description;
-    boolean available;
-    int requestId;
+    private int id;
+    private String name;
+    private String description;
+    private boolean available;
+    private int requestId;
 }

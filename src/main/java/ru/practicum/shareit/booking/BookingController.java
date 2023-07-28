@@ -12,14 +12,14 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.utils.Messages;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.List;
 
-import static ru.practicum.shareit.item.ItemController.USER_ID_HEADER;
 import static ru.practicum.shareit.utils.Constants.DEFAULT_FROM_VALUE;
 import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
+import static ru.practicum.shareit.utils.Constants.USER_ID_HEADER;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,7 +34,6 @@ public class BookingController {
     ResponseBookingDto add(@Valid @RequestBody PostBookingDto postBookingDto,
                            @RequestHeader(USER_ID_HEADER) int bookerId) {
         log.info(Messages.addBooking());
-        System.out.println(postBookingDto);
         Booking booking = bookingService.addBooking(postBookingDto, bookerId);
         return BookingMapper.toResponseBookingDto(booking);
     }
@@ -59,7 +58,7 @@ public class BookingController {
     public Collection<ResponseBookingDto> getAllBookings(@RequestParam(value = "state", defaultValue = "ALL") BookingState state,
                                                          @RequestHeader(USER_ID_HEADER) int userId,
                                                          @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                                         @Min(0) int from,
+                                                         @PositiveOrZero int from,
                                                          @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                                          @Positive int size) {
         log.info(Messages.findAllBookings(state, userId));
@@ -69,9 +68,9 @@ public class BookingController {
 
     @GetMapping("/owner")
     public Collection<ResponseBookingDto> getAllBookingForOwner(@RequestParam(value = "state", defaultValue = "ALL") BookingState state,
-                                                                @RequestHeader("X-Sharer-User-Id") int ownerId,
+                                                                @RequestHeader(USER_ID_HEADER) int ownerId,
                                                                 @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                                                @Min(0) int from,
+                                                                @PositiveOrZero int from,
                                                                 @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
                                                                 @Positive int size) {
         log.info(Messages.findAllBookingsForOwner(ownerId, state));

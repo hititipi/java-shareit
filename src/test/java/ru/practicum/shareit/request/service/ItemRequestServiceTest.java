@@ -1,6 +1,10 @@
 package ru.practicum.shareit.request.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,12 +26,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.TestUtils.requestor;
 
+@ExtendWith(MockitoExtension.class)
 public class ItemRequestServiceTest {
 
-    private final ItemRequestRepository itemRequestRepository = mock(ItemRequestRepository.class);
-    private final UserRepository userRepository = mock(UserRepository.class);
-    private final ItemRepository itemRepository = mock(ItemRepository.class);
-    private final ItemRequestService itemRequestService = new ItemRequestServiceImpl(itemRequestRepository, userRepository, itemRepository);
+    @Mock
+    private ItemRequestRepository itemRequestRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private ItemRepository itemRepository;
+    @InjectMocks
+    private ItemRequestServiceImpl itemRequestService;
 
     @Test
     void createItemRequestTest() {
