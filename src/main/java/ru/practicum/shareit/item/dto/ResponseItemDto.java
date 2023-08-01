@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 @ToString
 public class ResponseItemDto {
 
@@ -19,5 +20,6 @@ public class ResponseItemDto {
     private BookingReferencedDto lastBooking;
     private BookingReferencedDto nextBooking;
     private List<ResponseCommentDto> comments;
+    private Integer requestId;
 
 }

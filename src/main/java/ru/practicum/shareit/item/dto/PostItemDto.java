@@ -7,10 +7,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
-public class ItemDto {
+public class PostItemDto {
 
     private int id;
     @NotBlank(groups = {Create.class})
@@ -19,5 +21,6 @@ public class ItemDto {
     private String description;
     @NotNull(groups = {Create.class})
     private Boolean available;
+    private Integer requestId;
 
 }

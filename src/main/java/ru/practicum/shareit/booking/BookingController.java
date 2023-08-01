@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
@@ -11,15 +12,20 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.utils.Messages;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.List;
 
-import static ru.practicum.shareit.item.ItemController.USER_ID_HEADER;
+import static ru.practicum.shareit.utils.Constants.DEFAULT_FROM_VALUE;
+import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
+import static ru.practicum.shareit.utils.Constants.USER_ID_HEADER;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/bookings")
+@Validated
 public class BookingController {
 
     private final BookingService bookingService;
@@ -41,26 +47,34 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseBookingDto findById(@PathVariable int bookingId,
-                                       @RequestHeader(USER_ID_HEADER) int userId) {
+    public ResponseBookingDto getById(@PathVariable int bookingId,
+                                      @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.findBooking(bookingId, userId));
         Booking booking = bookingService.getBookingForUser(bookingId, userId);
         return BookingMapper.toResponseBookingDto(booking);
     }
 
     @GetMapping
-    public Collection<ResponseBookingDto> findAllBookings(@RequestParam(value = "state", defaultValue = "ALL") BookingState state,
-                                                          @RequestHeader(USER_ID_HEADER) int userId) {
+    public Collection<ResponseBookingDto> getAllBookings(@RequestParam(value = "state", defaultValue = "ALL") BookingState state,
+                                                         @RequestHeader(USER_ID_HEADER) int userId,
+                                                         @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                                         @PositiveOrZero int from,
+                                                         @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                                         @Positive int size) {
         log.info(Messages.findAllBookings(state, userId));
-        List<Booking> bookings = bookingService.findAllBookings(state, userId);
+        List<Booking> bookings = bookingService.getAllBookings(state, userId, from, size);
         return BookingMapper.toBookingReferencedDto(bookings);
     }
 
     @GetMapping("/owner")
     public Collection<ResponseBookingDto> getAllBookingForOwner(@RequestParam(value = "state", defaultValue = "ALL") BookingState state,
-                                                                @RequestHeader("X-Sharer-User-Id") int ownerId) {
+                                                                @RequestHeader(USER_ID_HEADER) int ownerId,
+                                                                @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                                                @PositiveOrZero int from,
+                                                                @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                                                @Positive int size) {
         log.info(Messages.findAllBookingsForOwner(ownerId, state));
-        Collection<Booking> bookings = bookingService.getAllBookingForOwner(state, ownerId);
+        Collection<Booking> bookings = bookingService.getAllBookingForOwner(state, ownerId, from, size);
         return BookingMapper.toBookingReferencedDto(bookings);
     }
 

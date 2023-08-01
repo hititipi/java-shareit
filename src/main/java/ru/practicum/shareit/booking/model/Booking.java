@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 @Entity(name = "bookings")
 @AllArgsConstructor
 @NoArgsConstructor

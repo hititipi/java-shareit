@@ -1,5 +1,8 @@
 package ru.practicum.shareit.validation;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class ValidationErrors {
 
     public static final String RESOURCE_NOT_FOUND = "Ресурс не найден";

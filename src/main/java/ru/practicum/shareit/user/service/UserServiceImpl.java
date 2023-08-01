@@ -3,9 +3,9 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validation.ValidationErrors;
 import ru.practicum.shareit.validation.exception.ValidationException;
 
@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService {
         if (updatedUser.getEmail() != null) {
             user.setEmail(updatedUser.getEmail());
         }
+        userRepository.save(user);
         return user;
     }
 
