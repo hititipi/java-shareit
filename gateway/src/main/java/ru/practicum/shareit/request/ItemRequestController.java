@@ -11,7 +11,6 @@ import ru.practicum.shareit.validation.marker.Create;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
 
 import static ru.practicum.shareit.utils.Constants.DEFAULT_FROM_VALUE;
 import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_VALUE;
@@ -41,10 +40,10 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAll(@RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                               @PositiveOrZero int from,
-                                               @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
-                                               @Positive int size,
-                                               @RequestHeader(USER_ID_HEADER) int userId) {
+                                         @PositiveOrZero int from,
+                                         @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                         @Positive int size,
+                                         @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.getAllRequestForUser(userId));
         return itemRequestClient.getAll(from, size, userId);
     }
