@@ -37,27 +37,19 @@ public class BookingClient extends BaseClient {
 
     public ResponseEntity<Object> approve(int bookingId, int userId, boolean approved) {
         Map<String, Object> parameters = Map.of("approved", approved);
-        log.info("Обработка запроса подтверждения аренды c id = {} ", bookingId);
         return patch("/" + bookingId + "?approved={approved}", userId, parameters, null);
     }
 
     public ResponseEntity<Object> getById(int bookingId, int userId) {
-        log.info("Обработка запроса на возврат аренды c id = {} ", bookingId);
         return get("/" + bookingId, userId);
     }
 
     public ResponseEntity<Object> getAllBookings(int userId, BookingState state, int from, int size) {
-        /*if (state.equals(UNSUPPORTED_STATUS)) {
-            throw new UnsupportedStatusException("Неподдерживаемый параметр BookingState");
-        }*/
-
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size,
                 "state", state.name()
         );
-
-        log.info("Обработка запроса арендующего на возврат аренд по bookerId = {} ", userId);
         return get("?from={from}&size={size}&state={state}", userId, parameters);
     }
 
@@ -68,10 +60,7 @@ public class BookingClient extends BaseClient {
                 "size", size,
                 "state", state.name()
         );
-
-        log.info("Обработка запроса владельца на возврат аренд по ownerId = {} ", userId);
         return get("/owner?from={from}&size={size}&state={state}", userId, parameters);
     }
-
 
 }

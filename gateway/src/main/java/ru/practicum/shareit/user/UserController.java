@@ -18,7 +18,6 @@ import ru.practicum.shareit.validation.marker.Update;
 public class UserController {
 
     private final UserClient userClient;
-
     @GetMapping("{id}")
     public ResponseEntity<Object> get(@PathVariable int id) {
         log.info(Messages.getUser(id));
@@ -39,7 +38,7 @@ public class UserController {
 
     @PatchMapping("{id}")
     public ResponseEntity<Object> update(@Validated({Update.class}) @RequestBody UserDto userDto,
-                                         @PathVariable("id") int id) {
+                          @PathVariable("id") int id) {
         log.info(Messages.updateUser(id));
         return userClient.update(userDto, id);
     }

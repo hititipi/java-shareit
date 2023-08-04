@@ -30,12 +30,10 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> create(PostItemRequestDto requestDto, int userId) {
-        log.info("Обработка запроса создания запроса аренды от пользователя c id = {} ", userId);
         return post("", userId, requestDto);
     }
 
     public ResponseEntity<Object> getForOwner(int userId) {
-        log.info("Обработка запроса владельца с userId = {} на возврат запросов бронирования ", userId);
         return get("", userId);
     }
 
@@ -44,13 +42,10 @@ public class ItemRequestClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-
-        log.info("Обработка запроса пользователя с userId = {} на возврат всех запросов бронирования ", userId);
         return get("/all?from={from}&size={size}", userId, parameters);
     }
 
     public ResponseEntity<Object> getById(int requestId, int userId) {
-        log.info("Обработка запроса на возврат всех запросов бронирования с Id = {}", requestId);
         return get("/" + requestId, userId);
     }
 }

@@ -33,12 +33,10 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> create(PostItemDto itemDto, int userId) {
-        log.info("Обработка запроса создания вещи пользователя c id = {} ", userId);
         return post("", userId, itemDto);
     }
 
     public ResponseEntity<Object> update(PostItemDto itemDto, int itemId, int userId) {
-        log.info("Обработка запроса обновления вещи пользователя c id = {} ", userId);
         return patch("/" + itemId, userId, itemDto);
     }
 
@@ -48,38 +46,29 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-
-        log.info("Обработка запроса на возврат вещей по userId = {} ", userId);
         return get("?from={from}&size={size}", userId, parameters);
     }
 
     public ResponseEntity<Object> getItemById(int itemId, int userId) {
-        log.info("Обработка запроса на возврат вещи c id = {} ", itemId);
         return get("/" + itemId, userId);
     }
 
-
     public ResponseEntity<Object> findItemsByText(String text, int from, int size) {
         if (text.isBlank()) return ResponseEntity.ok().body(List.of());
-
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size,
                 "text", text
         );
-
-        log.info("Обработка запроса на возврат вещей по тексту = {} ", text);
         return get("/search?from={from}&size={size}&text={text}", null, parameters);
     }
 
 
     public ResponseEntity<Object> update(UserDto userDto, int userId) {
-        log.info("Обработка запроса обновления пользователя c id = {} ", userId);
         return patch("/" + userId, userDto);
     }
 
     public ResponseEntity<Object> createComment(CommentDto commentDto, int itemId, int userId) {
-        log.info("Обработка запроса добавления комментария пользователя c id = {} ", userId);
         return post("/" + itemId + "/comment", userId, commentDto);
     }
 }

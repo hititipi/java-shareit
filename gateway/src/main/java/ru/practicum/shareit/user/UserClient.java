@@ -28,32 +28,26 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getAll() {
-        log.info("Обработка запроса на возврат всех пользователей");
         return get("");
     }
 
     public ResponseEntity<Object> getById(int userId) {
-        log.info("Обработка запроса на возврат пользователя c id = {} ", userId);
         return get("/" + userId);
     }
 
     public ResponseEntity<Object> create(UserDto userDto) {
-        log.info("Обработка запроса создания пользователя c name = {} ", userDto.getName());
         return post("", userDto);
     }
 
     public ResponseEntity<Object> update(UserDto userDto, int userId) {
-        log.info("Обработка запроса обновления пользователя c id = {} ", userId);
         return patch("/" + userId, userDto);
     }
 
     public ResponseEntity<Object> deleteById(int userId) {
-        log.info("Обработка запроса на удаление пользователя c id = {} ", userId);
         return delete("/" + userId);
     }
 
     public ResponseEntity<Object> deleteAll() {
-        log.info("Обработка запроса на удаление всех пользователей");
         return delete("");
     }
 }
