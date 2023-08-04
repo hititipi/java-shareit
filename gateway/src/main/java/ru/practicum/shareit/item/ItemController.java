@@ -14,7 +14,6 @@ import ru.practicum.shareit.validation.marker.Update;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.Collection;
 
 import static ru.practicum.shareit.utils.Constants.*;
 
@@ -36,18 +35,18 @@ public class ItemController {
 
     @PatchMapping("{id}")
     public ResponseEntity<Object> update(@Validated({Update.class}) @RequestBody PostItemDto postItemDto,
-                              @PathVariable("id") int itemId,
-                              @RequestHeader(USER_ID_HEADER) int ownerId) {
+                                         @PathVariable("id") int itemId,
+                                         @RequestHeader(USER_ID_HEADER) int ownerId) {
         log.info(Messages.updateItem(postItemDto.getId()));
         return itemClient.update(postItemDto, itemId, ownerId);
     }
 
     @GetMapping
     public ResponseEntity<Object> getAll(@RequestHeader(USER_ID_HEADER) int userId,
-                                              @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                              @PositiveOrZero int from,
-                                              @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
-                                              @Positive int size) {
+                                         @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                         @PositiveOrZero int from,
+                                         @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                         @Positive int size) {
         log.info(Messages.getAllItems(userId));
         return itemClient.getAll(userId, from, size);
     }
@@ -60,18 +59,18 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<Object> findItemsByText(@RequestParam String text,
-                                                       @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
-                                                       @PositiveOrZero int from,
-                                                       @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
-                                                       @Positive int size) {
+                                                  @RequestParam(defaultValue = DEFAULT_FROM_VALUE)
+                                                  @PositiveOrZero int from,
+                                                  @RequestParam(defaultValue = DEFAULT_SIZE_VALUE)
+                                                  @Positive int size) {
         log.info(Messages.findItems(text));
         return itemClient.findItemsByText(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@Valid @RequestBody CommentDto commentDto,
-                                         @PathVariable int itemId,
-                                         @RequestHeader(USER_ID_HEADER) int userId) {
+                                             @PathVariable int itemId,
+                                             @RequestHeader(USER_ID_HEADER) int userId) {
         log.info(Messages.addComment(itemId, userId));
         return itemClient.createComment(commentDto, itemId, userId);
     }

@@ -30,16 +30,12 @@ public class ItemRequestController {
     public ResponseEntity<Object> add(@Validated({Create.class}) @RequestBody PostItemRequestDto requestDto,
                                       @RequestHeader(USER_ID_HEADER) int requestorId) {
         log.info(Messages.addItemRequest(requestorId));
-        //ItemRequest request = ItemRequestMapper.toItemRequest(requestDto);
-        //request = itemRequestService.createItemRequest(request, requestorId);
-        //return ItemRequestMapper.toResponseItemRequestDto(request);
         return itemRequestClient.create(requestDto, requestorId);
     }
 
     @GetMapping
     public ResponseEntity<Object> getAllByOwner(@RequestHeader(USER_ID_HEADER) int requestorId) {
         log.info(Messages.getItemRequestsForOwner(requestorId));
-        //return itemRequestService.getForOwner(requestorId);
         return itemRequestClient.getForOwner(requestorId);
     }
 

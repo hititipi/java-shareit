@@ -62,7 +62,6 @@ public class Messages {
     }
 
 
-
     public static String addComment(int itemId, int userId) {
         return String.format("Запрос на добавление комментария: booking_id = %d, user_id = %d", itemId, userId);
     }

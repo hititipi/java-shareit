@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class ItemClient  extends BaseClient {
+public class ItemClient extends BaseClient {
 
     private static final String API_PREFIX = "/items";
 
@@ -55,11 +55,7 @@ public class ItemClient  extends BaseClient {
 
     public ResponseEntity<Object> getItemById(int itemId, int userId) {
         log.info("Обработка запроса на возврат вещи c id = {} ", itemId);
-        ResponseEntity<Object> result =  get("/" + itemId, userId);
-
-        System.out.println("RESULT RESULT RESULT");
-        System.out.println(result);
-        return result;
+        return get("/" + itemId, userId);
     }
 
 
@@ -86,16 +82,4 @@ public class ItemClient  extends BaseClient {
         log.info("Обработка запроса добавления комментария пользователя c id = {} ", userId);
         return post("/" + itemId + "/comment", userId, commentDto);
     }
-
-    /*public ResponseEntity<Object> deleteById(int userId) {
-        log.info("Обработка запроса на удаление пользователя c id = {} ", userId);
-        return delete("/" + userId);
-    }
-
-    public ResponseEntity<Object> deleteAll() {
-        log.info("Обработка запроса на удаление всех пользователей");
-        return delete("");
-    }*/
-
-
 }

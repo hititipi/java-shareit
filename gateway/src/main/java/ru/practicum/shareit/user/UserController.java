@@ -10,8 +10,6 @@ import ru.practicum.shareit.utils.Messages;
 import ru.practicum.shareit.validation.marker.Create;
 import ru.practicum.shareit.validation.marker.Update;
 
-import java.util.Collection;
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -20,6 +18,7 @@ import java.util.Collection;
 public class UserController {
 
     private final UserClient userClient;
+
     @GetMapping("{id}")
     public ResponseEntity<Object> get(@PathVariable int id) {
         log.info(Messages.getUser(id));
@@ -34,14 +33,13 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> add(@Validated({Create.class}) @RequestBody UserDto userDto) {
-        log.info("11111111111111111111111");
         log.info(Messages.addUser());
         return userClient.create(userDto);
     }
 
     @PatchMapping("{id}")
     public ResponseEntity<Object> update(@Validated({Update.class}) @RequestBody UserDto userDto,
-                          @PathVariable("id") int id) {
+                                         @PathVariable("id") int id) {
         log.info(Messages.updateUser(id));
         return userClient.update(userDto, id);
     }
