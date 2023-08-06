@@ -10,4 +10,6 @@ public class Constants {
     public static final String DEFAULT_FROM_VALUE = "0";
     public static final int DEFAULT_SIZE_INT = 20;
     public static final String DEFAULT_SIZE_VALUE = "20";
+    public static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
+
 }
