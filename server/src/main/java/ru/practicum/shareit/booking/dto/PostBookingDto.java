@@ -5,8 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.shareit.utils.Constants.DATE_PATTERN;
-
 @Getter
 @Setter
 @Builder
@@ -16,9 +14,7 @@ import static ru.practicum.shareit.utils.Constants.DATE_PATTERN;
 public class PostBookingDto {
 
     private int itemId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN)
     private LocalDateTime start;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN)
     private LocalDateTime end;
 
 }
