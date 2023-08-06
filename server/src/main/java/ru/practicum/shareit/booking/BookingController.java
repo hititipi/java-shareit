@@ -22,7 +22,6 @@ import static ru.practicum.shareit.utils.Constants.USER_ID_HEADER;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/bookings")
-@Validated
 public class BookingController {
 
     private final BookingService bookingService;

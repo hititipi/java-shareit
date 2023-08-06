@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
@@ -19,7 +20,7 @@ import static ru.practicum.shareit.utils.Constants.USER_ID_HEADER;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController
+@Controller
 @RequestMapping(path = "/bookings")
 @Validated
 public class BookingController {

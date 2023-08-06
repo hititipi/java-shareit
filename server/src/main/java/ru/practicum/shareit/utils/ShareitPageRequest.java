@@ -3,6 +3,9 @@ package ru.practicum.shareit.utils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import static ru.practicum.shareit.utils.Constants.DEFAULT_FROM_INT;
+import static ru.practicum.shareit.utils.Constants.DEFAULT_SIZE_INT;
+
 public class ShareitPageRequest extends PageRequest {
 
     public ShareitPageRequest() {
@@ -10,7 +13,7 @@ public class ShareitPageRequest extends PageRequest {
     }
 
     public ShareitPageRequest(Sort sort) {
-        this(0, 20, sort);
+        this(DEFAULT_FROM_INT, DEFAULT_SIZE_INT, sort);
     }
 
     public ShareitPageRequest(int from, int size) {
